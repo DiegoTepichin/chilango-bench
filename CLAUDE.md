@@ -29,8 +29,13 @@ Anything else is out of scope until v0.1 ships.
 
 ## Commands
 
-None yet. Add each command here once it exists and has been run.
+- `uv sync`: Install project and development dependencies.
+- `uv run ruff check .`: Lint Python source files.
+- `uv run ruff format --check .`: Verify code formatting.
+- `uv run mypy .`: Run strict static type checking.
+- `uv run pytest`: Execute test suite offline.
+- `uv run chilango-bench`: Run CLI entrypoint.
 
 ## Structure
 
-Not defined yet. Decided in `docs/PLAN.md`.
+Defined in `docs/PLAN.md`. Core package lives in `src/chilango_bench`, tests in `tests/`.
