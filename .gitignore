@@ -229,3 +229,6 @@ __marimo__/
 .env
 .env.*
 !.env.example
+
+# Benchmark run results
+results/

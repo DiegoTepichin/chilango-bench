@@ -11,5 +11,5 @@ def test_version() -> None:
 
 def test_cli_main() -> None:
     """Verify CLI main entrypoint executes cleanly."""
-    exit_code = main()
+    exit_code = main([])
     assert exit_code == 0
