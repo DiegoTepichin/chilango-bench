@@ -34,8 +34,11 @@ Anything else is out of scope until v0.1 ships.
 - `uv run ruff format --check .`: Verify code formatting.
 - `uv run mypy .`: Run strict static type checking.
 - `uv run pytest`: Execute test suite offline.
-- `uv run chilango-bench`: Run CLI entrypoint.
+- `uv run chilango-bench --version`: Display package version.
+- `uv run chilango-bench validate datasets/v0.1/seed.jsonl`: Validate JSONL dataset schema and categories.
+- `uv run chilango-bench eval --dataset <path> --model <model> [--provider mock|openai] [--output <report.json>]`: Evaluate model against benchmark.
+- `uv run chilango-bench leaderboard --results-dir <dir>`: Generate markdown leaderboard table from report artifacts.
 
 ## Structure
 
-Defined in `docs/PLAN.md`. Core package lives in `src/chilango_bench`, tests in `tests/`.
+Defined in `docs/PLAN.md`. Core package lives in `src/chilango_bench`, tests in `tests/`, datasets in `datasets/`.
