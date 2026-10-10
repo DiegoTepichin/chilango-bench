@@ -16,6 +16,34 @@ Standard Spanish NLP benchmarks evaluate formal Castilian or generic Latin Ameri
 
 `chilango-bench` provides a deterministic, reproducible evaluation suite to score and compare models before deploying them in Mexico.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    D[("📁 JSONL Dataset\nseed.jsonl")] --> V["🛡️ Schema Validator\nPydantic v2"]
+    V --> E["⚙️ Evaluation Engine"]
+
+    subgraph Runners ["Model Runners"]
+        R1["🌐 OpenAIRunner\nOpenAI · Groq · vLLM"]
+        R2["💻 Local Runner\nOllama · LM Studio"]
+        R3["🧪 MockRunner\n100% Offline CI"]
+    end
+
+    R1 -.-> E
+    R2 -.-> E
+    R3 -.-> E
+
+    E --> J{"Grading\nEngine"}
+    J -->|Deterministic| MC["Multiple Choice\n& Exact Match"]
+    J -->|Qualitative| RB["LLM-as-a-Judge\nRubric 1–5"]
+
+    MC --> A["📊 Metrics\nAccuracy · Latency · Tokens"]
+    RB --> A
+
+    A --> OUT1["📄 JSON Run Bundle\nresults/*.json"]
+    A --> OUT2["🏆 Markdown Leaderboard"]
+```
+
 ## Benchmark dimensions
 
 | Category | Description |
