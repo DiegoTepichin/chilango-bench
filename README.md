@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="chilango-bench banner" width="100%" />
-
-# 🌮 chilango-bench
+<img src="assets/banner.svg" alt="chilango-bench banner" width="860" />
 
 **The reproducible, production-grade benchmark evaluating Large Language Models on Mexican Spanish nuances: slang (*chilangismos*), cultural literacy, civic procedures, and double entendre (*albur*).**
 
@@ -16,7 +14,6 @@
 
 [Why chilango-bench?](#-why-chilango-bench) •
 [Architecture](#-architecture) •
-[Interactive Demo](#-interactive-demo) •
 [Benchmark Dimensions](#-benchmark-dimensions) •
 [Quickstart](#-quickstart) •
 [Leaderboard](#-leaderboard-preview)
@@ -38,10 +35,10 @@ Standard Spanish NLP benchmarks (like MMLU-es or generic translation tests) eval
 
 ---
 
-## ⚡ Interactive Demo
+## ⚡ CLI Demo
 
 <div align="center">
-  <img src="assets/demo.svg" alt="chilango-bench CLI execution demo" width="100%" />
+  <img src="assets/demo.svg" alt="chilango-bench CLI execution demo" width="860" />
 </div>
 
 ---
