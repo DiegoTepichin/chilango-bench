@@ -273,3 +273,116 @@ def test_evaluator_type_mismatches() -> None:
     rubric_eval = RubricJudgeEvaluator(judge)
     with pytest.raises(EvaluatorError, match="not a rubric judged item"):
         rubric_eval.evaluate(item_mcq, "A")
+
+
+def test_normalize_text_edge_cases() -> None:
+    """Ensure normalize_text handles empty and punctuation-only inputs gracefully."""
+    assert normalize_text("") == ""
+    assert normalize_text("   ") == ""
+    assert normalize_text("¡¿!.,;:-") == ""
+    assert normalize_text("GÜEY") == "guey"
+
+
+def test_extract_choice_key_ambiguous_and_edge_cases() -> None:
+    """Ensure extract_choice_key handles edge cases without false positives."""
+    choices = {"A": "Sí", "B": "No", "C": "Tal vez"}
+
+    # Single-letter match case-insensitive
+    assert extract_choice_key("a", choices) == "A"
+
+    # Response that matches choice text value
+    assert extract_choice_key("Tal vez es correcto", choices) == "C"
+
+    # Completely unresolvable response returns None
+    assert extract_choice_key("", choices) is None
+    assert extract_choice_key("Ni idea, quién sabe", choices) is None
+
+
+def test_exact_match_evaluator_single_string_target() -> None:
+    """Ensure ExactMatchEvaluator works when target is a plain string, not a list."""
+    item = BenchmarkItem(
+        id="em-single",
+        category=Category.PROCEDURES,
+        eval_type=EvaluationType.EXACT_MATCH,
+        prompt="¿Qué significa RFC?",
+        target="Registro Federal de Contribuyentes",
+    )
+    evaluator = ExactMatchEvaluator()
+
+    res_correct = evaluator.evaluate(item, "Registro Federal de Contribuyentes")
+    assert res_correct.is_correct is True
+
+    res_wrong = evaluator.evaluate(item, "CURP")
+    assert res_wrong.is_correct is False
+
+
+def test_rubric_judge_score_clamping() -> None:
+    """Ensure RubricJudgeEvaluator clamps out-of-range scores from judge to [1, 5]."""
+    item = BenchmarkItem(
+        id="rubric-clamp",
+        category=Category.ALBUR,
+        eval_type=EvaluationType.RUBRIC_JUDGED,
+        prompt="Explica el albur",
+        target="Referencia",
+    )
+
+    # Score 10 must be clamped to 5 → normalized to 1.0
+    mock_judge_high = MockRunner(
+        default_response='{"score": 10, "justification": "Excelente pero fuera de rango"}'
+    )
+    evaluator_high = RubricJudgeEvaluator(mock_judge_high)
+    res_high = evaluator_high.evaluate(item, "Respuesta candidata")
+    assert res_high.metadata["judge_raw_score"] == 5
+    assert res_high.score == 1.0
+
+    # Score 0 must be clamped to 1 → normalized to 0.0
+    mock_judge_low = MockRunner(
+        default_response='{"score": 0, "justification": "Fuera de rango bajo"}'
+    )
+    evaluator_low = RubricJudgeEvaluator(mock_judge_low)
+    res_low = evaluator_low.evaluate(item, "Respuesta sin sentido")
+    assert res_low.metadata["judge_raw_score"] == 1
+    assert res_low.score == 0.0
+
+
+def test_aggregate_metrics_all_incorrect() -> None:
+    """Ensure aggregate_metrics computes 0% accuracy when all items are wrong."""
+    results = [
+        EvaluationResult(
+            item_id=str(i),
+            category=Category.SLANG,
+            eval_type=EvaluationType.MULTIPLE_CHOICE,
+            score=0.0,
+            is_correct=False,
+            model_response="X",
+            target="A",
+        )
+        for i in range(4)
+    ]
+    metrics = aggregate_metrics(results)
+    assert metrics.total_items == 4
+    assert metrics.correct_items == 0
+    assert metrics.accuracy == 0.0
+
+
+def test_evaluation_engine_runner_call_count() -> None:
+    """Ensure EvaluationEngine calls runner exactly once per benchmark item."""
+    items = [
+        BenchmarkItem(
+            id=f"item-{i}",
+            category=Category.CULTURAL_CONTEXT,
+            eval_type=EvaluationType.EXACT_MATCH,
+            prompt=f"Pregunta {i}",
+            target="CDMX",
+        )
+        for i in range(5)
+    ]
+    runner = MockRunner(default_response="CDMX")
+    engine = EvaluationEngine(runner=runner)
+
+    results, metrics = engine.run_benchmark(items)
+
+    assert runner.call_count == 5
+    assert len(results) == 5
+    assert metrics.total_items == 5
+    assert metrics.accuracy == 1.0
