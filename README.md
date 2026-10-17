@@ -8,6 +8,8 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+> **Status: pre-release.** The harness works end to end, but the seed dataset has not been human-reviewed yet and no real model results have been published. Do not cite scores from this repository yet.
+
 ---
 
 ## Why
@@ -24,14 +26,12 @@ flowchart LR
     V --> E["⚙️ Evaluation Engine"]
 
     subgraph Runners ["Model Runners"]
-        R1["🌐 OpenAIRunner\nOpenAI · Groq · vLLM"]
-        R2["💻 Local Runner\nOllama · LM Studio"]
-        R3["🧪 MockRunner\n100% Offline CI"]
+        R1["🌐 OpenAIRunner\nany OpenAI-compatible endpoint"]
+        R2["🧪 MockRunner\n100% Offline CI"]
     end
 
     R1 -.-> E
     R2 -.-> E
-    R3 -.-> E
 
     E --> J{"Grading\nEngine"}
     J -->|Deterministic| MC["Multiple Choice\n& Exact Match"]
@@ -53,7 +53,7 @@ flowchart LR
 | **Procedures** | Real-world admin navigation: SAT, CURP, RFC, e.firma, licencias |
 | **Albur** | Wordplay, innuendo detection, double entendre resolution |
 
-The seed dataset (`v0.1`) ships with 40 curated items — 10 per category.
+The seed dataset (`v0.1`) ships with 40 multiple-choice items, 10 per category, with answer keys spread evenly across A–D. Every item is marked `review_status: unreviewed` until a human verifies it.
 
 ## Quickstart
 
@@ -81,13 +81,7 @@ uv run chilango-bench eval \
   --provider mock \
   --output results/mock-run.json
 
-# Local model via Ollama
-OPENAI_BASE_URL="http://localhost:11434/v1" uv run chilango-bench eval \
-  --dataset datasets/v0.1/seed.jsonl \
-  --model llama3.2 \
-  --output results/llama3.json
-
-# Cloud endpoint (OpenAI / Groq / any OpenAI-compatible API)
+# OpenAI-compatible endpoint (set OPENAI_BASE_URL for providers other than OpenAI)
 export OPENAI_API_KEY="your-api-key"
 uv run chilango-bench eval \
   --dataset datasets/v0.1/seed.jsonl \
@@ -101,16 +95,9 @@ uv run chilango-bench eval \
 uv run chilango-bench leaderboard --results-dir results
 ```
 
-## Leaderboard (v0.1 seed)
+## Leaderboard
 
-| Rank | Model | Overall | Slang | Culture | Procedures | Albur |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| 1 | `gpt-4o` | 92.5% | 90% | 100% | 100% | 80% |
-| 2 | `llama-3.3-70b` | 85.0% | 90% | 90% | 90% | 70% |
-| 3 | `gpt-4o-mini` | 82.5% | 80% | 90% | 90% | 70% |
-| 4 | `llama-3.1-8b` | 67.5% | 70% | 70% | 80% | 50% |
-
-> Results on the curated seed dataset. Submit a PR to add your model.
+No results yet. Real model runs will be published here, each backed by its JSON run report, once the seed dataset has been reviewed.
 
 ## Development
 

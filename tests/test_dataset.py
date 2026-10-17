@@ -1,5 +1,6 @@
 """Unit tests for dataset schema, loaders, validators, and seed dataset."""
 
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -112,6 +113,23 @@ def test_seed_dataset_loads_and_validates(tmp_path: Path) -> None:
     assert report.category_counts[Category.CULTURAL_CONTEXT.value] == 10
     assert report.category_counts[Category.PROCEDURES.value] == 10
     assert report.category_counts[Category.ALBUR.value] == 10
+
+
+def test_seed_dataset_answer_keys_are_balanced() -> None:
+    """Ensure no constant answer can beat chance on the multiple choice seed items."""
+    items = load_dataset(Path("datasets/v0.1/seed.jsonl"))
+    mcq_items = [item for item in items if item.eval_type == EvaluationType.MULTIPLE_CHOICE]
+    target_counts = Counter(str(item.target) for item in mcq_items)
+    choice_count = len(mcq_items[0].choices or {})
+
+    assert max(target_counts.values()) / len(mcq_items) <= 1 / choice_count
+
+
+def test_seed_dataset_items_declare_review_status() -> None:
+    """Ensure every seed item records whether a human has reviewed it."""
+    items = load_dataset(Path("datasets/v0.1/seed.jsonl"))
+
+    assert all(item.metadata.get("review_status") in {"unreviewed", "reviewed"} for item in items)
 
 
 def test_load_dataset_duplicate_id_rejection(tmp_path: Path) -> None:
