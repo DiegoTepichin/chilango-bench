@@ -1,205 +1,160 @@
-"""Command-line interface for chilango-bench."""
+"""`chilango-bench` command line."""
+
+from __future__ import annotations
 
 import argparse
 import datetime
 import sys
-from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from chilango_bench import __version__
 from chilango_bench.core.exceptions import ChilangoBenchError
 from chilango_bench.dataset.loader import file_sha256, load_dataset
+from chilango_bench.dataset.models import EvaluationType
 from chilango_bench.dataset.validator import validate_dataset_file
-from chilango_bench.evaluators.engine import PROMPT_TEMPLATE, EvaluationEngine
+from chilango_bench.evaluators.engine import PROMPT_TEMPLATE, EvaluationEngine, GenerationSettings
 from chilango_bench.reporting.leaderboard import leaderboard_markdown, load_reports
 from chilango_bench.reporting.models import DatasetInfo, RunReport, RunSettings
-from chilango_bench.runners.factory import create_runner
+from chilango_bench.runners.factory import Provider, create_runner
 
 if TYPE_CHECKING:
-    from chilango_bench.runners.base import BaseRunner
+    from collections.abc import Sequence
+
+    from chilango_bench.dataset.models import BenchmarkItem
+    from chilango_bench.evaluators.base import EvaluationResult
+    from chilango_bench.evaluators.metrics import BenchmarkMetrics
+
+EXIT_OK = 0
+EXIT_FAILURE = 1
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build command line argument parser."""
     parser = argparse.ArgumentParser(
         prog="chilango-bench",
-        description="Benchmark large language models on Mexican Spanish dialect and nuances.",
+        description="Benchmark large language models on Mexican Spanish.",
     )
     parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
+    commands = parser.add_subparsers(dest="command", required=True, metavar="COMMAND")
 
-    subparsers = parser.add_subparsers(dest="subcommand", help="Available subcommands")
+    validate = commands.add_parser("validate", help="check a dataset file against the schema")
+    validate.add_argument("dataset", type=Path)
 
-    # Command: validate
-    validate_parser = subparsers.add_parser(
-        "validate", help="Validate integrity and schema of a benchmark JSONL dataset."
+    run = commands.add_parser("eval", help="run a model on the benchmark")
+    run.add_argument("-d", "--dataset", type=Path, required=True)
+    run.add_argument("-m", "--model", required=True, help="model name as the provider knows it")
+    run.add_argument(
+        "-p", "--provider", choices=[p.value for p in Provider], default=Provider.OPENAI.value
     )
-    validate_parser.add_argument("dataset", help="Path to JSONL dataset file")
+    run.add_argument("--base-url", help="override the endpoint of the openai or ollama provider")
+    run.add_argument("-j", "--judge", help="judge model for rubric items (same provider)")
+    run.add_argument("--temperature", type=float, default=0.0)
+    run.add_argument("--max-tokens", type=int, default=512)
+    run.add_argument("--limit", type=int, help="evaluate only the first N items (smoke test)")
+    run.add_argument("-o", "--output", type=Path, help="write the JSON run report here")
 
-    # Command: eval
-    eval_parser = subparsers.add_parser(
-        "eval", help="Run benchmark evaluation against a target model."
-    )
-    eval_parser.add_argument(
-        "-d", "--dataset", required=True, help="Path to evaluation dataset JSONL file"
-    )
-    eval_parser.add_argument(
-        "-m",
-        "--model",
-        required=True,
-        help="Target model identifier (e.g. gpt-4o-mini, mock-model)",
-    )
-    eval_parser.add_argument(
-        "-p", "--provider", default="auto", help="Provider adapter ('openai', 'mock', 'auto')"
-    )
-    eval_parser.add_argument(
-        "-j", "--judge", default=None, help="Optional judge model for rubric evaluations"
-    )
-    eval_parser.add_argument(
-        "-o", "--output", default=None, help="Destination JSON path for run report bundle"
-    )
-
-    # Command: leaderboard
-    lb_parser = subparsers.add_parser(
-        "leaderboard", help="Generate Markdown leaderboard from a directory of run reports."
-    )
-    lb_parser.add_argument(
-        "-r",
-        "--results-dir",
-        default="results",
-        help="Directory containing benchmark JSON reports (default: results/)",
-    )
-
+    board = commands.add_parser("leaderboard", help="Markdown leaderboard from run reports")
+    board.add_argument("-r", "--results-dir", type=Path, default=Path("results"))
     return parser
 
 
-def run_validate(dataset_path: str) -> int:
-    """Handle 'validate' subcommand."""
-    sys.stdout.write(f"Validating dataset: {dataset_path}\n")
-    report = validate_dataset_file(dataset_path)
+def main(argv: Sequence[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        if args.command == "validate":
+            return run_validate(args.dataset)
+        if args.command == "eval":
+            return run_eval(args)
+        return run_leaderboard(args.results_dir)
+    except ChilangoBenchError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return EXIT_FAILURE
 
+
+def run_validate(dataset: Path) -> int:
+    report = validate_dataset_file(dataset)
     if not report.is_valid:
-        sys.stderr.write(f"❌ Validation failed: {report.error_message}\n")
-        return 1
-
-    sys.stdout.write(f"✅ Dataset is valid! Total items: {report.total_items}\n")
-    sys.stdout.write("Distribution by Category:\n")
-    for cat, count in sorted(report.category_counts.items()):
-        sys.stdout.write(f"  - {cat}: {count}\n")
-    sys.stdout.write("Distribution by Evaluation Type:\n")
-    for et, count in sorted(report.eval_type_counts.items()):
-        sys.stdout.write(f"  - {et}: {count}\n")
-    return 0
+        print(f"invalid: {report.error_message}", file=sys.stderr)
+        return EXIT_FAILURE
+    print(f"{dataset}: {report.total_items} valid items")
+    for name, counts in (("category", report.category_counts), ("type", report.eval_type_counts)):
+        print(f"  by {name}: " + ", ".join(f"{k} {v}" for k, v in sorted(counts.items())))
+    return EXIT_OK
 
 
-def run_eval(
-    dataset_path: str,
-    model: str,
-    provider: str,
-    judge_model: str | None,
-    output_path: str | None,
-) -> int:
-    """Handle 'eval' subcommand."""
-    sys.stdout.write(f"Running chilango-bench on model: {model} (provider: {provider})\n")
-    items = load_dataset(dataset_path)
-    sys.stdout.write(f"Loaded {len(items)} items from {dataset_path}\n")
-
-    runner = create_runner(model=model, provider=provider)
-    judge_runner: BaseRunner | None = (
-        create_runner(model=judge_model, provider="auto") if judge_model else None
-    )
-
-    engine = EvaluationEngine(runner=runner, judge_runner=judge_runner)
-    results, metrics = engine.run_benchmark(items)
-
-    sys.stdout.write("\n================ Benchmark Results ================\n")
-    sys.stdout.write(f"Model: {model}\n")
-    sys.stdout.write(
-        f"Accuracy: {metrics.accuracy:.1%} ({metrics.correct_items}/{metrics.graded_items}), "
-        f"95% CI {metrics.overall.ci_low:.0%}-{metrics.overall.ci_high:.0%}\n"
-    )
-    sys.stdout.write("Category Accuracy:\n")
-    for cat, score in metrics.categories.items():
-        sys.stdout.write(
-            f"  - {cat}: {score.accuracy:.1%} ({score.ci_low:.0%}-{score.ci_high:.0%})\n"
-        )
-    sys.stdout.write(
-        f"Mean Latency: {metrics.mean_latency_seconds:.3f}s "
-        f"(Total: {metrics.total_latency_seconds:.3f}s)\n"
-    )
-    sys.stdout.write(
-        f"Tokens: {metrics.total_prompt_tokens} prompt, "
-        f"{metrics.total_completion_tokens} completion\n"
-    )
-    sys.stdout.write("===================================================\n")
-
-    if output_path:
+def run_eval(args: argparse.Namespace) -> int:
+    provider = Provider(args.provider)
+    items = _select_items(load_dataset(args.dataset), judge=args.judge, limit=args.limit)
+    runner = create_runner(args.model, provider, args.base_url)
+    judge = create_runner(args.judge, provider, args.base_url) if args.judge else None
+    settings = GenerationSettings(temperature=args.temperature, max_tokens=args.max_tokens)
+    engine = EvaluationEngine(runner, judge, settings)
+    print(f"{args.model} ({provider.value}) on {len(items)} items", file=sys.stderr)
+    results, metrics = engine.run_benchmark(items, _print_progress)
+    print(_summary(args.model, metrics))
+    if args.output:
         report = RunReport(
             benchmark_version=__version__,
-            model=model,
+            model=args.model,
             created_at=datetime.datetime.now(datetime.UTC).replace(microsecond=0),
             dataset=DatasetInfo(
-                path=Path(dataset_path).as_posix(),
-                sha256=file_sha256(dataset_path),
-                items=len(items),
+                path=args.dataset.as_posix(), sha256=file_sha256(args.dataset), items=len(items)
             ),
             settings=RunSettings(
-                provider=provider,
+                provider=provider.value,
                 base_url=getattr(runner, "base_url", None),
-                temperature=0.0,
-                max_tokens=512,
+                temperature=settings.temperature,
+                max_tokens=settings.max_tokens,
                 prompt_template=PROMPT_TEMPLATE,
-                judge_model=judge_model,
+                judge_model=args.judge,
             ),
             metrics=metrics,
             results=results,
         )
-        report.save(output_path)
-        sys.stdout.write(f"Saved run report artifact to: {output_path}\n")
+        report.save(args.output)
+        print(f"wrote {args.output}", file=sys.stderr)
+    return EXIT_OK
 
-    return 0
 
-
-def run_leaderboard(results_dir: str) -> int:
-    """Handle 'leaderboard' subcommand."""
+def run_leaderboard(results_dir: Path) -> int:
     loaded = load_reports(results_dir)
     for error in loaded.invalid:
-        sys.stderr.write(f"skipped: {error}\n")
-    sys.stdout.write(leaderboard_markdown(loaded.reports))
-    return 1 if loaded.invalid else 0
+        print(f"skipped: {error}", file=sys.stderr)
+    print(leaderboard_markdown(loaded.reports), end="")
+    return EXIT_FAILURE if loaded.invalid else EXIT_OK
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    """CLI execution entrypoint."""
-    parser = build_parser()
-    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
+def _select_items(
+    items: list[BenchmarkItem], *, judge: str | None, limit: int | None
+) -> list[BenchmarkItem]:
+    if judge is None:
+        rubric = sum(item.eval_type is EvaluationType.RUBRIC_JUDGED for item in items)
+        if rubric:
+            print(f"skipping {rubric} rubric item(s): pass --judge to grade them", file=sys.stderr)
+        items = [item for item in items if item.eval_type is not EvaluationType.RUBRIC_JUDGED]
+    return items[:limit] if limit else items
 
-    if not args.subcommand:
-        parser.print_help()
-        return 0
 
-    try:
-        if args.subcommand == "validate":
-            return run_validate(args.dataset)
-        if args.subcommand == "eval":
-            return run_eval(
-                dataset_path=args.dataset,
-                model=args.model,
-                provider=args.provider,
-                judge_model=args.judge,
-                output_path=args.output,
-            )
-        if args.subcommand == "leaderboard":
-            return run_leaderboard(args.results_dir)
-    except ChilangoBenchError as exc:
-        sys.stderr.write(f"Error: {exc}\n")
-        return 1
-    except Exception as exc:
-        sys.stderr.write(f"Unexpected error: {exc}\n")
-        return 1
+def _print_progress(index: int, total: int, result: EvaluationResult) -> None:
+    mark = "error" if result.error else ("ok" if result.is_correct else "wrong")
+    print(f"[{index}/{total}] {result.item_id}: {mark}", file=sys.stderr)
 
-    return 0
+
+def _summary(model: str, metrics: BenchmarkMetrics) -> str:
+    overall = metrics.overall
+    lines = [
+        f"{model}: {overall.accuracy:.1%} accuracy "
+        f"(95% CI {overall.ci_low:.1%}-{overall.ci_high:.1%}), "
+        f"{metrics.correct_items}/{metrics.graded_items} correct",
+        *(
+            f"  {name}: {score.accuracy:.1%} ({score.ci_low:.0%}-{score.ci_high:.0%}, n={score.n})"
+            for name, score in metrics.categories.items()
+        ),
+        f"  unresolved answers: {metrics.unresolved_items}, errors: {metrics.errored_items}, "
+        f"mean latency: {metrics.mean_latency_seconds:.2f}s",
+    ]
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
