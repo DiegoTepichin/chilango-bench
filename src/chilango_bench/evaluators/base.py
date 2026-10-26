@@ -20,6 +20,8 @@ class EvaluationResult:
     latency_seconds: float = 0.0
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    error: str | None = None
+    """Set when the item could not be graded (runner or judge failure); excluded from accuracy."""
     metadata: dict[str, object] = field(default_factory=dict)
 
 

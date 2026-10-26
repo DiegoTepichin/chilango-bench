@@ -37,6 +37,7 @@ class BenchmarkRunReport:
                     "latency_seconds": r.latency_seconds,
                     "prompt_tokens": r.prompt_tokens,
                     "completion_tokens": r.completion_tokens,
+                    "error": r.error,
                     "metadata": r.metadata,
                 }
                 for r in self.results

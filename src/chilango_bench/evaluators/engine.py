@@ -67,6 +67,7 @@ class EvaluationEngine:
             latency_seconds=response.latency_seconds,
             prompt_tokens=response.prompt_tokens,
             completion_tokens=response.completion_tokens,
+            error=eval_res.error,
             metadata=eval_res.metadata,
         )
 

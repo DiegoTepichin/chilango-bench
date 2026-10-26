@@ -22,6 +22,10 @@ Debes responder ÚNICAMENTE un objeto JSON válido con este formato:
 """
 
 
+PASSING_SCORE = 3
+_SCORE_FIELD = re.compile(r"[\"']?score[\"']?\s*[:=]\s*(\d+)", re.IGNORECASE)
+
+
 class RubricJudgeEvaluator(BaseEvaluator):
     """Evaluates open-ended answers using an LLM judge runner against rubric criteria."""
 
@@ -54,48 +58,48 @@ class RubricJudgeEvaluator(BaseEvaluator):
             max_tokens=256,
         )
 
-        score_int, justification = self._parse_judge_output(judge_response.text)
-        # Normalize 1..5 to 0.0..1.0
-        normalized_score = max(0.0, min(1.0, (score_int - 1.0) / 4.0))
-        is_correct = score_int >= 3
-
+        verdict = parse_judge_output(judge_response.text)
+        if verdict is None:
+            return EvaluationResult(
+                item_id=item.id,
+                category=item.category,
+                eval_type=item.eval_type,
+                score=0.0,
+                is_correct=False,
+                model_response=response_text,
+                target=item.target,
+                error=f"judge output could not be parsed: {judge_response.text[:200]!r}",
+                metadata={"judge_model": self.judge_runner.model_name},
+            )
+        score, justification = verdict
         return EvaluationResult(
             item_id=item.id,
             category=item.category,
             eval_type=item.eval_type,
-            score=normalized_score,
-            is_correct=is_correct,
+            score=(score - 1) / 4,
+            is_correct=score >= PASSING_SCORE,
             model_response=response_text,
             target=item.target,
             metadata={
-                "judge_raw_score": score_int,
+                "judge_raw_score": score,
                 "judge_justification": justification,
                 "judge_model": self.judge_runner.model_name,
             },
         )
 
-    def _parse_judge_output(self, text: str) -> tuple[int, str]:
-        """Extract score and justification from judge model output."""
-        cleaned = text.strip()
 
-        # Attempt JSON extraction
+def parse_judge_output(text: str) -> tuple[int, str] | None:
+    """Score (1-5) and justification from the judge, or None if it is missing or out of range."""
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
         try:
-            # Strip markdown code blocks if wrapped in ```json ... ```
-            match = re.search(r"\{.*\}", cleaned, re.DOTALL)
-            if match:
-                data = json.loads(match.group(0))
-                if "score" in data:
-                    raw_score = int(data["score"])
-                    justification = str(data.get("justification", ""))
-                    clamped_score = max(1, min(5, raw_score))
-                    return clamped_score, justification
-        except (json.JSONDecodeError, ValueError):
-            pass
-
-        # Fallback to regex finding score
-        score_match = re.search(r"\b([1-5])\b", cleaned)
-        if score_match:
-            return int(score_match.group(1)), cleaned
-
-        # Default fallback
-        return 1, f"Failed to parse structured score from judge output: {cleaned}"
+            data = json.loads(match.group(0))
+        except json.JSONDecodeError:
+            data = None
+        if isinstance(data, dict) and isinstance(data.get("score"), int):
+            score = int(data["score"])
+            return (score, str(data.get("justification", ""))) if 1 <= score <= 5 else None
+    field = _SCORE_FIELD.search(text)
+    if field and 1 <= int(field.group(1)) <= 5:
+        return int(field.group(1)), text.strip()
+    return None
