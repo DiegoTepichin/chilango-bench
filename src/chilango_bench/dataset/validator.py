@@ -1,7 +1,7 @@
 """Dataset validation utilities and summary reports."""
 
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from chilango_bench.core.exceptions import DatasetError, DatasetValidationError
@@ -16,6 +16,14 @@ class ValidationReport:
     total_items: int
     category_counts: dict[str, int]
     eval_type_counts: dict[str, int]
+    review_counts: dict[str, int] = field(default_factory=dict)
+    longest_choice_rate: float = 0.0
+    """Share of multiple-choice items whose correct option is the strictly longest one.
+
+    A model that always picks the longest option scores this much; keep it near 1/len(choices).
+    """
+    shortest_choice_rate: float = 0.0
+    """Same for the strictly shortest option."""
     is_valid: bool = True
     error_message: str | None = None
 
@@ -58,5 +66,23 @@ def summarize_dataset(items: list[BenchmarkItem]) -> ValidationReport:
         total_items=len(items),
         category_counts=dict(cat_counts),
         eval_type_counts=dict(type_counts),
+        review_counts=dict(Counter(item.review_status.value for item in items)),
+        longest_choice_rate=_length_rate(items, longest=True),
+        shortest_choice_rate=_length_rate(items, longest=False),
         is_valid=True,
     )
+
+
+def _length_rate(items: list[BenchmarkItem], *, longest: bool) -> float:
+    multiple_choice = [item for item in items if item.choices]
+    if not multiple_choice:
+        return 0.0
+    hits = sum(_correct_is_extreme(item, longest=longest) for item in multiple_choice)
+    return round(hits / len(multiple_choice), 4)
+
+
+def _correct_is_extreme(item: BenchmarkItem, *, longest: bool) -> bool:
+    assert item.choices is not None
+    correct = len(item.choices[str(item.target)])
+    others = [len(text) for key, text in item.choices.items() if key != item.target]
+    return correct > max(others) if longest else correct < min(others)
