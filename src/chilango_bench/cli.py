@@ -5,6 +5,7 @@ import datetime
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from chilango_bench import __version__
 from chilango_bench.core.exceptions import ChilangoBenchError
@@ -17,8 +18,10 @@ from chilango_bench.reporting.leaderboard import (
     save_run_report,
 )
 from chilango_bench.reporting.models import BenchmarkRunReport
-from chilango_bench.runners.base import BaseRunner
 from chilango_bench.runners.factory import create_runner
+
+if TYPE_CHECKING:
+    from chilango_bench.runners.base import BaseRunner
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -25,7 +25,7 @@ Debes responder ÚNICAMENTE un objeto JSON válido con este formato:
 class RubricJudgeEvaluator(BaseEvaluator):
     """Evaluates open-ended answers using an LLM judge runner against rubric criteria."""
 
-    def __init__(self, judge_runner: BaseRunner):
+    def __init__(self, judge_runner: BaseRunner) -> None:
         self.judge_runner = judge_runner
 
     def evaluate(self, item: BenchmarkItem, response_text: str) -> EvaluationResult:

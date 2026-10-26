@@ -24,7 +24,7 @@ def format_eval_prompt(item: BenchmarkItem) -> str:
 class EvaluationEngine:
     """Orchestrates candidate model execution and grading across benchmark items."""
 
-    def __init__(self, runner: BaseRunner, judge_runner: BaseRunner | None = None):
+    def __init__(self, runner: BaseRunner, judge_runner: BaseRunner | None = None) -> None:
         self.runner = runner
         self.mcq_evaluator = MultipleChoiceEvaluator()
         self.em_evaluator = ExactMatchEvaluator()

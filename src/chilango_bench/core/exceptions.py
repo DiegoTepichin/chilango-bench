@@ -12,7 +12,9 @@ class DatasetError(ChilangoBenchError):
 class DatasetValidationError(DatasetError):
     """Raised when a dataset item fails schema or semantic validation."""
 
-    def __init__(self, message: str, line_number: int | None = None, item_id: str | None = None):
+    def __init__(
+        self, message: str, line_number: int | None = None, item_id: str | None = None
+    ) -> None:
         super().__init__(message)
         self.line_number = line_number
         self.item_id = item_id

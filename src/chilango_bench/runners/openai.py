@@ -21,7 +21,7 @@ class OpenAIRunner(BaseRunner):
         timeout_seconds: float | None = None,
         max_retries: int | None = None,
         client: httpx.Client | None = None,
-    ):
+    ) -> None:
         super().__init__(model_name)
         settings = get_settings()
 

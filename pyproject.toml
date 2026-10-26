@@ -37,37 +37,17 @@ target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "N",   # pep8-naming
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "A",   # flake8-builtins
-    "C4",  # flake8-comprehensions
-    "SIM", # flake8-simplify
-    "RUF", # ruff-specific rules
-]
+select = ["E", "W", "F", "I", "N", "UP", "B", "A", "C4", "SIM", "RUF", "PT", "ANN", "TC"]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN"]
 
 [tool.mypy]
 python_version = "3.11"
 strict = true
-packages = ["chilango_bench"]
-mypy_path = "src"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_any_generics = true
-no_implicit_optional = true
-check_untyped_defs = true
+files = ["src", "tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
-addopts = "-v --strict-markers"
+addopts = "-ra --strict-markers"
+filterwarnings = ["error"]
