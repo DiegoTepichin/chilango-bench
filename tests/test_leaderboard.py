@@ -4,7 +4,7 @@ from pathlib import Path
 
 from chilango_bench.dataset.models import Category, EvaluationType
 from chilango_bench.evaluators.base import EvaluationResult
-from chilango_bench.evaluators.metrics import BenchmarkMetrics
+from chilango_bench.evaluators.metrics import BenchmarkMetrics, aggregate_metrics
 from chilango_bench.reporting.leaderboard import (
     generate_leaderboard_markdown,
     load_reports_from_directory,
@@ -16,18 +16,6 @@ from chilango_bench.reporting.models import BenchmarkRunReport
 
 def test_save_and_load_run_report(tmp_path: Path) -> None:
     """Ensure benchmark run reports serialize and deserialize cleanly."""
-    metrics = BenchmarkMetrics(
-        total_items=2,
-        correct_items=2,
-        accuracy=1.0,
-        average_score=1.0,
-        category_scores={"slang": 1.0},
-        eval_type_scores={"multiple_choice": 1.0},
-        total_latency_seconds=0.2,
-        mean_latency_seconds=0.1,
-        total_prompt_tokens=20,
-        total_completion_tokens=4,
-    )
     result = EvaluationResult(
         item_id="item-1",
         category=Category.SLANG,
@@ -37,6 +25,7 @@ def test_save_and_load_run_report(tmp_path: Path) -> None:
         model_response="B",
         target="B",
     )
+    metrics = aggregate_metrics([result])
     report = BenchmarkRunReport(
         benchmark_version="0.1.0",
         model_name="mock-model",
@@ -61,6 +50,9 @@ def test_generate_leaderboard_markdown(tmp_path: Path) -> None:
     """Ensure leaderboard Markdown table formats and sorts properly."""
     m1 = BenchmarkMetrics(
         total_items=10,
+        graded_items=10,
+        errored_items=0,
+        unresolved_items=0,
         correct_items=9,
         accuracy=0.90,
         average_score=0.90,
@@ -75,6 +67,9 @@ def test_generate_leaderboard_markdown(tmp_path: Path) -> None:
 
     m2 = BenchmarkMetrics(
         total_items=10,
+        graded_items=10,
+        errored_items=0,
+        unresolved_items=0,
         correct_items=6,
         accuracy=0.60,
         average_score=0.60,
@@ -103,7 +98,7 @@ def test_generate_leaderboard_markdown(tmp_path: Path) -> None:
 
 def test_load_reports_from_directory(tmp_path: Path) -> None:
     """Ensure valid reports in directory are discovered and parsed."""
-    m = BenchmarkMetrics(1, 1, 1.0, 1.0, {}, {}, 0.1, 0.1, 1, 1)
+    m = aggregate_metrics([])
     r = BenchmarkRunReport("0.1.0", "m1", "now", "path", m, [])
     save_run_report(r, tmp_path / "r1.json")
 

@@ -1,17 +1,29 @@
-"""Metrics aggregation and statistical reporting for evaluation runs."""
+"""Aggregate metrics for an evaluation run."""
+
+from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from chilango_bench.evaluators.base import EvaluationResult
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from chilango_bench.evaluators.base import EvaluationResult
+
+UNRESOLVED = "UNRESOLVED"
 
 
 @dataclass(frozen=True)
 class BenchmarkMetrics:
-    """Aggregated performance metrics across benchmark items."""
+    """Accuracy over graded items; items with a runner or judge error are counted apart."""
 
     total_items: int
+    graded_items: int
     correct_items: int
+    errored_items: int
+    unresolved_items: int
+    """Multiple-choice answers that did not commit to an option (graded as wrong)."""
     accuracy: float
     average_score: float
     category_scores: dict[str, float]
@@ -23,62 +35,36 @@ class BenchmarkMetrics:
 
 
 def aggregate_metrics(results: list[EvaluationResult]) -> BenchmarkMetrics:
-    """Compute aggregate accuracy, category breakdowns, and performance metrics."""
-    if not results:
-        return BenchmarkMetrics(
-            total_items=0,
-            correct_items=0,
-            accuracy=0.0,
-            average_score=0.0,
-            category_scores={},
-            eval_type_scores={},
-            total_latency_seconds=0.0,
-            mean_latency_seconds=0.0,
-            total_prompt_tokens=0,
-            total_completion_tokens=0,
-        )
-
-    total_items = len(results)
-    correct_items = sum(1 for r in results if r.is_correct)
-    total_score = sum(r.score for r in results)
-
-    cat_totals: dict[str, int] = defaultdict(int)
-    cat_correct: dict[str, int] = defaultdict(int)
-
-    type_totals: dict[str, int] = defaultdict(int)
-    type_correct: dict[str, int] = defaultdict(int)
-
-    total_latency = 0.0
-    total_prompt_tokens = 0
-    total_completion_tokens = 0
-
-    for r in results:
-        cat_key = r.category.value
-        cat_totals[cat_key] += 1
-        if r.is_correct:
-            cat_correct[cat_key] += 1
-
-        type_key = r.eval_type.value
-        type_totals[type_key] += 1
-        if r.is_correct:
-            type_correct[type_key] += 1
-
-        total_latency += r.latency_seconds
-        total_prompt_tokens += r.prompt_tokens
-        total_completion_tokens += r.completion_tokens
-
-    category_scores = {cat: (cat_correct[cat] / cat_totals[cat]) for cat in cat_totals}
-    eval_type_scores = {t: (type_correct[t] / type_totals[t]) for t in type_totals}
-
+    graded = [r for r in results if r.error is None]
+    correct = sum(r.is_correct for r in graded)
+    latency = sum(r.latency_seconds for r in results)
     return BenchmarkMetrics(
-        total_items=total_items,
-        correct_items=correct_items,
-        accuracy=round(correct_items / total_items, 4),
-        average_score=round(total_score / total_items, 4),
-        category_scores={k: round(v, 4) for k, v in category_scores.items()},
-        eval_type_scores={k: round(v, 4) for k, v in eval_type_scores.items()},
-        total_latency_seconds=round(total_latency, 3),
-        mean_latency_seconds=round(total_latency / total_items, 3),
-        total_prompt_tokens=total_prompt_tokens,
-        total_completion_tokens=total_completion_tokens,
+        total_items=len(results),
+        graded_items=len(graded),
+        correct_items=correct,
+        errored_items=len(results) - len(graded),
+        unresolved_items=sum(r.metadata.get("extracted_choice") == UNRESOLVED for r in graded),
+        accuracy=_ratio(correct, len(graded)),
+        average_score=_ratio(sum(r.score for r in graded), len(graded)),
+        category_scores=_accuracy_by(graded, lambda r: r.category.value),
+        eval_type_scores=_accuracy_by(graded, lambda r: r.eval_type.value),
+        total_latency_seconds=round(latency, 3),
+        mean_latency_seconds=round(latency / len(results), 3) if results else 0.0,
+        total_prompt_tokens=sum(r.prompt_tokens for r in results),
+        total_completion_tokens=sum(r.completion_tokens for r in results),
     )
+
+
+def _ratio(numerator: float, denominator: int) -> float:
+    return round(numerator / denominator, 4) if denominator else 0.0
+
+
+def _accuracy_by(
+    results: list[EvaluationResult], key: Callable[[EvaluationResult], str]
+) -> dict[str, float]:
+    totals: dict[str, int] = defaultdict(int)
+    correct: dict[str, int] = defaultdict(int)
+    for result in results:
+        totals[key(result)] += 1
+        correct[key(result)] += result.is_correct
+    return {group: _ratio(correct[group], totals[group]) for group in sorted(totals)}

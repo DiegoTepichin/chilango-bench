@@ -1,6 +1,7 @@
 """Leaderboard generation and benchmark run persistence."""
 
 import json
+from dataclasses import fields
 from pathlib import Path
 from typing import Any
 
@@ -35,18 +36,11 @@ def load_run_report(file_path: str | Path) -> BenchmarkRunReport:
         raise ChilangoBenchError(f"Report {path} is missing mandatory benchmark fields")
 
     metrics_raw: dict[str, Any] = data.get("metrics", {})
-    metrics = BenchmarkMetrics(
-        total_items=int(metrics_raw.get("total_items", 0)),
-        correct_items=int(metrics_raw.get("correct_items", 0)),
-        accuracy=float(metrics_raw.get("accuracy", 0.0)),
-        average_score=float(metrics_raw.get("average_score", 0.0)),
-        category_scores=dict(metrics_raw.get("category_scores", {})),
-        eval_type_scores=dict(metrics_raw.get("eval_type_scores", {})),
-        total_latency_seconds=float(metrics_raw.get("total_latency_seconds", 0.0)),
-        mean_latency_seconds=float(metrics_raw.get("mean_latency_seconds", 0.0)),
-        total_prompt_tokens=int(metrics_raw.get("total_prompt_tokens", 0)),
-        total_completion_tokens=int(metrics_raw.get("total_completion_tokens", 0)),
-    )
+    known = {f.name for f in fields(BenchmarkMetrics)}
+    try:
+        metrics = BenchmarkMetrics(**{k: v for k, v in metrics_raw.items() if k in known})
+    except TypeError as exc:
+        raise ChilangoBenchError(f"Report {path} has incomplete metrics: {exc}") from exc
 
     results_raw = data.get("results", [])
     results: list[EvaluationResult] = []
@@ -63,6 +57,7 @@ def load_run_report(file_path: str | Path) -> BenchmarkRunReport:
                 latency_seconds=float(r.get("latency_seconds", 0.0)),
                 prompt_tokens=int(r.get("prompt_tokens", 0)),
                 completion_tokens=int(r.get("completion_tokens", 0)),
+                error=r.get("error"),
                 metadata=dict(r.get("metadata", {})),
             )
         )
