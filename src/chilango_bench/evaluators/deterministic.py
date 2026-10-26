@@ -21,6 +21,7 @@ def normalize_text(text: str) -> str:
 
 
 MIN_CHOICE_TEXT_LENGTH = 4
+MIN_CONTAINED_TARGET = 3
 _MARKUP = re.compile(r"[*_`#>]")
 _BARE_KEY = re.compile(r"^\(?([A-Za-z])\)?[.:]?$")
 _LEADING_KEY = re.compile(r"^(?:\(([A-Za-z])\)|([A-Za-z])[).:]|([A-Z])\s)")
@@ -127,7 +128,11 @@ class ExactMatchEvaluator(BaseEvaluator):
         is_correct = (
             norm_candidate in norm_targets
             or any(t == norm_candidate for t in norm_targets)
-            or any(f" {t} " in f" {norm_candidate} " for t in norm_targets if len(t) > 3)
+            or any(
+                f" {t} " in f" {norm_candidate} "
+                for t in norm_targets
+                if len(t) >= MIN_CONTAINED_TARGET or any(ch.isdigit() for ch in t)
+            )
         )
 
         score = 1.0 if is_correct else 0.0

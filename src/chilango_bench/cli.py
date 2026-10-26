@@ -11,7 +11,8 @@ from typing import TYPE_CHECKING
 from chilango_bench import __version__
 from chilango_bench.core.exceptions import ChilangoBenchError
 from chilango_bench.dataset.loader import file_sha256, load_dataset
-from chilango_bench.dataset.models import EvaluationType
+from chilango_bench.dataset.models import EvaluationType, ReviewStatus
+from chilango_bench.dataset.review import review_dataset
 from chilango_bench.dataset.validator import validate_dataset_file
 from chilango_bench.evaluators.engine import PROMPT_TEMPLATE, EvaluationEngine, GenerationSettings
 from chilango_bench.reporting.leaderboard import leaderboard_markdown, load_reports
@@ -53,6 +54,14 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--limit", type=int, help="evaluate only the first N items (smoke test)")
     run.add_argument("-o", "--output", type=Path, help="write the JSON run report here")
 
+    run.add_argument(
+        "--accepted-only", action="store_true", help="evaluate only items a reviewer accepted"
+    )
+
+    review = commands.add_parser("review", help="accept or reject unreviewed dataset items")
+    review.add_argument("dataset", type=Path)
+    review.add_argument("--reviewer", required=True, help="your name or GitHub handle")
+
     board = commands.add_parser("leaderboard", help="Markdown leaderboard from run reports")
     board.add_argument("-r", "--results-dir", type=Path, default=Path("results"))
     return parser
@@ -65,6 +74,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             return run_validate(args.dataset)
         if args.command == "eval":
             return run_eval(args)
+        if args.command == "review":
+            summary = review_dataset(args.dataset, args.reviewer)
+            print(
+                f"accepted {summary.accepted}, rejected {summary.rejected}, "
+                f"skipped {summary.skipped}; {summary.remaining} still unreviewed"
+            )
+            return EXIT_OK
         return run_leaderboard(args.results_dir)
     except ChilangoBenchError as exc:
         print(f"error: {exc}", file=sys.stderr)
@@ -77,14 +93,28 @@ def run_validate(dataset: Path) -> int:
         print(f"invalid: {report.error_message}", file=sys.stderr)
         return EXIT_FAILURE
     print(f"{dataset}: {report.total_items} valid items")
-    for name, counts in (("category", report.category_counts), ("type", report.eval_type_counts)):
+    breakdowns = (
+        ("category", report.category_counts),
+        ("type", report.eval_type_counts),
+        ("review", report.review_counts),
+    )
+    for name, counts in breakdowns:
         print(f"  by {name}: " + ", ".join(f"{k} {v}" for k, v in sorted(counts.items())))
+    print(
+        f"  correct option is the longest in {report.longest_choice_rate:.0%} "
+        f"and the shortest in {report.shortest_choice_rate:.0%} of multiple-choice items"
+    )
     return EXIT_OK
 
 
 def run_eval(args: argparse.Namespace) -> int:
     provider = Provider(args.provider)
-    items = _select_items(load_dataset(args.dataset), judge=args.judge, limit=args.limit)
+    items = _select_items(
+        load_dataset(args.dataset),
+        judge=args.judge,
+        limit=args.limit,
+        accepted_only=args.accepted_only,
+    )
     runner = create_runner(args.model, provider, args.base_url)
     judge = create_runner(args.judge, provider, args.base_url) if args.judge else None
     settings = GenerationSettings(temperature=args.temperature, max_tokens=args.max_tokens)
@@ -125,8 +155,11 @@ def run_leaderboard(results_dir: Path) -> int:
 
 
 def _select_items(
-    items: list[BenchmarkItem], *, judge: str | None, limit: int | None
+    items: list[BenchmarkItem], *, judge: str | None, limit: int | None, accepted_only: bool
 ) -> list[BenchmarkItem]:
+    items = [item for item in items if item.review_status is not ReviewStatus.REJECTED]
+    if accepted_only:
+        items = [item for item in items if item.review_status is ReviewStatus.ACCEPTED]
     if judge is None:
         rubric = sum(item.eval_type is EvaluationType.RUBRIC_JUDGED for item in items)
         if rubric:

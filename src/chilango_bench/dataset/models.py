@@ -23,6 +23,14 @@ class EvaluationType(StrEnum):
     RUBRIC_JUDGED = "rubric_judged"
 
 
+class ReviewStatus(StrEnum):
+    """Whether a person has checked the item's facts, wording and answer key."""
+
+    UNREVIEWED = "unreviewed"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+
+
 class RubricCriterion(BaseModel):
     """Criterion used for rubric-based LLM judge evaluations."""
 
@@ -55,6 +63,10 @@ class BenchmarkItem(BaseModel):
     rubric: list[RubricCriterion] | None = Field(
         default=None, description="Criteria for rubric judged items"
     )
+    explanation: str | None = Field(
+        default=None, description="Why the target is correct; shown to reviewers, never to models"
+    )
+    review_status: ReviewStatus = Field(default=ReviewStatus.UNREVIEWED)
     metadata: dict[str, str | int | float | bool] = Field(
         default_factory=dict, description="Arbitrary metadata such as difficulty, source, or notes"
     )
