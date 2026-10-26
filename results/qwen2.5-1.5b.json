@@ -1,0 +1,2670 @@
+{
+  "report_version": 1,
+  "benchmark_version": "0.1.0",
+  "model": "qwen2.5:1.5b",
+  "created_at": "2026-10-26T20:45:46Z",
+  "dataset": {
+    "path": "datasets/v1/chilango-bench.jsonl",
+    "sha256": "58df56a8684e7af164c8e72c138c1d57f7ffea4704f9f73e8e134be89c622a1c",
+    "items": 157
+  },
+  "settings": {
+    "provider": "ollama",
+    "base_url": "http://localhost:11434/v1",
+    "temperature": 0.0,
+    "max_tokens": 512,
+    "prompt_template": "es-v1",
+    "judge_model": null
+  },
+  "metrics": {
+    "total_items": 157,
+    "graded_items": 157,
+    "correct_items": 87,
+    "errored_items": 0,
+    "unresolved_items": 0,
+    "overall": {
+      "accuracy": 0.5541,
+      "ci_low": 0.4777,
+      "ci_high": 0.6306,
+      "n": 157
+    },
+    "categories": {
+      "albur": {
+        "accuracy": 0.7391,
+        "ci_low": 0.5652,
+        "ci_high": 0.913,
+        "n": 23
+      },
+      "cultural_context": {
+        "accuracy": 0.5122,
+        "ci_low": 0.3659,
+        "ci_high": 0.6585,
+        "n": 41
+      },
+      "procedures": {
+        "accuracy": 0.6585,
+        "ci_low": 0.5122,
+        "ci_high": 0.8049,
+        "n": 41
+      },
+      "slang": {
+        "accuracy": 0.4231,
+        "ci_low": 0.2885,
+        "ci_high": 0.5577,
+        "n": 52
+      }
+    },
+    "eval_types": {
+      "exact_match": {
+        "accuracy": 0.1739,
+        "ci_low": 0.0435,
+        "ci_high": 0.3478,
+        "n": 23
+      },
+      "multiple_choice": {
+        "accuracy": 0.6194,
+        "ci_low": 0.5373,
+        "ci_high": 0.7015,
+        "n": 134
+      }
+    },
+    "average_score": 0.5541,
+    "total_latency_seconds": 28.565,
+    "mean_latency_seconds": 0.182,
+    "total_prompt_tokens": 17391,
+    "total_completion_tokens": 476
+  },
+  "results": [
+    {
+      "item_id": "slang-001",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 1.5714327080640942,
+      "prompt_tokens": 136,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-002",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.24130070803221315,
+      "prompt_tokens": 160,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-003",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.18523924995679408,
+      "prompt_tokens": 129,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-004",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.1949721670243889,
+      "prompt_tokens": 132,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-005",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.20236570807173848,
+      "prompt_tokens": 128,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-006",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "B",
+      "latency_seconds": 0.20979458303190768,
+      "prompt_tokens": 129,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-007",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "C",
+      "latency_seconds": 0.20647958293557167,
+      "prompt_tokens": 145,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-008",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15789600007701665,
+      "prompt_tokens": 115,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-009",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "A",
+      "latency_seconds": 0.2035546669503674,
+      "prompt_tokens": 135,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-010",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.20439733401872218,
+      "prompt_tokens": 135,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-011",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.1613051249878481,
+      "prompt_tokens": 115,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-012",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.1659016669727862,
+      "prompt_tokens": 103,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-013",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "C",
+      "latency_seconds": 0.15038220793940127,
+      "prompt_tokens": 92,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-014",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.20780029194429517,
+      "prompt_tokens": 125,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-015",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.14986749994568527,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-016",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.16507408302277327,
+      "prompt_tokens": 106,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-017",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "C",
+      "latency_seconds": 0.1603292910149321,
+      "prompt_tokens": 104,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-018",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.16019812505692244,
+      "prompt_tokens": 96,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-019",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.16465079202316701,
+      "prompt_tokens": 110,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-020",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.15093770890962332,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-021",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.16295450006145984,
+      "prompt_tokens": 102,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-022",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.14999137504491955,
+      "prompt_tokens": 97,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-023",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "A",
+      "latency_seconds": 0.15356754197273403,
+      "prompt_tokens": 93,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-024",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.16203070804476738,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-025",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.15071787510532886,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-026",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "D",
+      "latency_seconds": 0.1588505000108853,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-027",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.15790350001771003,
+      "prompt_tokens": 108,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-028",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.15799908305052668,
+      "prompt_tokens": 117,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-029",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.15351837500929832,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-030",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15662087500095367,
+      "prompt_tokens": 96,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-031",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.14739604201167822,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-032",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.14720154099632055,
+      "prompt_tokens": 100,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-033",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.15754779207054526,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-034",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "D",
+      "latency_seconds": 0.1454663750482723,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-035",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.15150537493173033,
+      "prompt_tokens": 109,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-036",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "B",
+      "latency_seconds": 0.1551332080271095,
+      "prompt_tokens": 102,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-037",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.16811908408999443,
+      "prompt_tokens": 109,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-038",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.14972012490034103,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-039",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.16120566707104445,
+      "prompt_tokens": 109,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-040",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.1784385829232633,
+      "prompt_tokens": 122,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "slang-041",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "C",
+      "latency_seconds": 0.14972916594706476,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-042",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.13117924996186048,
+      "prompt_tokens": 95,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "slang-043",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "A",
+      "latency_seconds": 0.15585095901042223,
+      "prompt_tokens": 94,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "slang-044",
+      "category": "slang",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.15819454204756767,
+      "prompt_tokens": 116,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "slang-045",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "\"Moneda\"",
+      "target": [
+        "lana"
+      ],
+      "latency_seconds": 0.1500363330123946,
+      "prompt_tokens": 70,
+      "completion_tokens": 5,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "moneda",
+        "normalized_targets": "lana"
+      }
+    },
+    {
+      "item_id": "slang-046",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Chancleta",
+      "target": [
+        "chamba"
+      ],
+      "latency_seconds": 0.14117445901501924,
+      "prompt_tokens": 59,
+      "completion_tokens": 4,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "chancleta",
+        "normalized_targets": "chamba"
+      }
+    },
+    {
+      "item_id": "slang-047",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Chilaca",
+      "target": [
+        "chela",
+        "chelas"
+      ],
+      "latency_seconds": 0.09505883394740522,
+      "prompt_tokens": 59,
+      "completion_tokens": 4,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "chilaca",
+        "normalized_targets": "chela | chelas"
+      }
+    },
+    {
+      "item_id": "slang-048",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Sí, el nombre propio masculino que se usa para decir 'sí' en el habla coloquial mexicana es \"sí\".",
+      "target": [
+        "simon"
+      ],
+      "latency_seconds": 0.554698041989468,
+      "prompt_tokens": 61,
+      "completion_tokens": 33,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "si el nombre propio masculino que se usa para decir si en el habla coloquial mexicana es si",
+        "normalized_targets": "simon"
+      }
+    },
+    {
+      "item_id": "slang-049",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "\"¿Qué?\"",
+      "target": [
+        "neta"
+      ],
+      "latency_seconds": 0.11960958305280656,
+      "prompt_tokens": 60,
+      "completion_tokens": 5,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "que",
+        "normalized_targets": "neta"
+      }
+    },
+    {
+      "item_id": "slang-050",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "El término es \"tacaño\".",
+      "target": [
+        "codo"
+      ],
+      "latency_seconds": 0.22079987509641796,
+      "prompt_tokens": 64,
+      "completion_tokens": 9,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "el termino es tacano",
+        "normalized_targets": "codo"
+      }
+    },
+    {
+      "item_id": "slang-051",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "El microbús de transporte público en la CDMX se llama \"patrulla\".",
+      "target": [
+        "pesero",
+        "peseros"
+      ],
+      "latency_seconds": 0.3567361669847742,
+      "prompt_tokens": 71,
+      "completion_tokens": 20,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "el microbus de transporte publico en la cdmx se llama patrulla",
+        "normalized_targets": "pesero | peseros"
+      }
+    },
+    {
+      "item_id": "slang-052",
+      "category": "slang",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "¡Maldito!",
+      "target": [
+        "chale"
+      ],
+      "latency_seconds": 0.17202370800077915,
+      "prompt_tokens": 63,
+      "completion_tokens": 6,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "maldito",
+        "normalized_targets": "chale"
+      }
+    },
+    {
+      "item_id": "cult-001",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.16627679206430912,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-002",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15833587490487844,
+      "prompt_tokens": 98,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-003",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.1529828750062734,
+      "prompt_tokens": 112,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-004",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.19666487502399832,
+      "prompt_tokens": 153,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-005",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.14989041700027883,
+      "prompt_tokens": 117,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-006",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.17973770794924349,
+      "prompt_tokens": 139,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-007",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.25452320801559836,
+      "prompt_tokens": 159,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-008",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.19875500001944602,
+      "prompt_tokens": 130,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-009",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.16124504199251533,
+      "prompt_tokens": 115,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-010",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "D",
+      "latency_seconds": 0.1672950420761481,
+      "prompt_tokens": 134,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "cult-011",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.1318537499755621,
+      "prompt_tokens": 108,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-012",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.20928183302748948,
+      "prompt_tokens": 137,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-013",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.1438287500059232,
+      "prompt_tokens": 101,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "cult-014",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.15547579200938344,
+      "prompt_tokens": 117,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-015",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.19896062498446554,
+      "prompt_tokens": 123,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-016",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.13279345899354666,
+      "prompt_tokens": 102,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-017",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.18396512500476092,
+      "prompt_tokens": 129,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-018",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.16747570899315178,
+      "prompt_tokens": 118,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-019",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "A",
+      "latency_seconds": 0.13580670801457018,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-020",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.14882529096212238,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-021",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "C",
+      "latency_seconds": 0.17101591697428375,
+      "prompt_tokens": 117,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-022",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.13482083403505385,
+      "prompt_tokens": 97,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-023",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "A",
+      "latency_seconds": 0.131796040921472,
+      "prompt_tokens": 108,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-024",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "B",
+      "latency_seconds": 0.1395739590516314,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-025",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "C",
+      "latency_seconds": 0.16484995908103883,
+      "prompt_tokens": 102,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-026",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.2230036249384284,
+      "prompt_tokens": 155,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-027",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.20095841703005135,
+      "prompt_tokens": 128,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-028",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "B",
+      "latency_seconds": 0.17015391704626381,
+      "prompt_tokens": 125,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-029",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.14970904192887247,
+      "prompt_tokens": 101,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "cult-030",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.1514353749807924,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-031",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.19295737508218735,
+      "prompt_tokens": 128,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-032",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A) La cucaracha",
+      "target": "B",
+      "latency_seconds": 0.2179520420031622,
+      "prompt_tokens": 99,
+      "completion_tokens": 7,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "cult-033",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.16461158299352974,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "cult-034",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.13485079107340425,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "cult-035",
+      "category": "cultural_context",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "A",
+      "latency_seconds": 0.14847454195842147,
+      "prompt_tokens": 108,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "cult-036",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "Universidad Nacional Autónoma de México",
+      "target": [
+        "universidad nacional autonoma de mexico"
+      ],
+      "latency_seconds": 0.1731616669567302,
+      "prompt_tokens": 47,
+      "completion_tokens": 9,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "universidad nacional autonoma de mexico",
+        "normalized_targets": "universidad nacional autonoma de mexico"
+      }
+    },
+    {
+      "item_id": "cult-037",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "Cempasúchil",
+      "target": [
+        "cempasuchil",
+        "cempasuchitl",
+        "cempaxochitl",
+        "cempoalxochitl"
+      ],
+      "latency_seconds": 0.2043624579673633,
+      "prompt_tokens": 59,
+      "completion_tokens": 7,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "cempasuchil",
+        "normalized_targets": "cempasuchil | cempasuchitl | cempaxochitl | cempoalxochitl"
+      }
+    },
+    {
+      "item_id": "cult-038",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "Pan de Muerto",
+      "target": [
+        "pan de muerto"
+      ],
+      "latency_seconds": 0.20701858296524733,
+      "prompt_tokens": 57,
+      "completion_tokens": 5,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "pan de muerto",
+        "normalized_targets": "pan de muerto"
+      }
+    },
+    {
+      "item_id": "cult-039",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "El Día de la Candelaria se comen tamales el 12 de febrero.",
+      "target": [
+        "2 de febrero",
+        "dos de febrero"
+      ],
+      "latency_seconds": 0.3604451249120757,
+      "prompt_tokens": 58,
+      "completion_tokens": 23,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "el dia de la candelaria se comen tamales el 12 de febrero",
+        "normalized_targets": "2 de febrero | dos de febrero"
+      }
+    },
+    {
+      "item_id": "cult-040",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La plaza famosa por sus mariachis es la Plaza de la República.",
+      "target": [
+        "garibaldi"
+      ],
+      "latency_seconds": 0.2715182499960065,
+      "prompt_tokens": 55,
+      "completion_tokens": 17,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "la plaza famosa por sus mariachis es la plaza de la republica",
+        "normalized_targets": "garibaldi"
+      }
+    },
+    {
+      "item_id": "cult-041",
+      "category": "cultural_context",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Náuticos",
+      "target": [
+        "trajinera",
+        "trajineras"
+      ],
+      "latency_seconds": 0.1621414590626955,
+      "prompt_tokens": 61,
+      "completion_tokens": 5,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "nauticos",
+        "normalized_targets": "trajinera | trajineras"
+      }
+    },
+    {
+      "item_id": "proc-001",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18714229203760624,
+      "prompt_tokens": 140,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-002",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.23434950003866106,
+      "prompt_tokens": 184,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-003",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.13315462495665997,
+      "prompt_tokens": 118,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-004",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.17083029204513878,
+      "prompt_tokens": 152,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-005",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.16575591603759676,
+      "prompt_tokens": 121,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-006",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.20306487497873604,
+      "prompt_tokens": 149,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-007",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.22130941704381257,
+      "prompt_tokens": 161,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-008",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.2105357910040766,
+      "prompt_tokens": 165,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "proc-009",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.2215390830533579,
+      "prompt_tokens": 155,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-010",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.19508720794692636,
+      "prompt_tokens": 135,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-011",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.1100074159912765,
+      "prompt_tokens": 85,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-012",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.14865350001491606,
+      "prompt_tokens": 95,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-013",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.15226687502581626,
+      "prompt_tokens": 105,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-014",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "D",
+      "latency_seconds": 0.13259870803449303,
+      "prompt_tokens": 98,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-015",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18087895796634257,
+      "prompt_tokens": 149,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-016",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.14084816700778902,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-017",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "C",
+      "latency_seconds": 0.15858241694513708,
+      "prompt_tokens": 117,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-018",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15616012504324317,
+      "prompt_tokens": 114,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-019",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.1336234170012176,
+      "prompt_tokens": 99,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-020",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.15315320796798915,
+      "prompt_tokens": 98,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-021",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "B",
+      "target": "C",
+      "latency_seconds": 0.14977783407084644,
+      "prompt_tokens": 94,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-022",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.1454469170421362,
+      "prompt_tokens": 116,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "proc-023",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18368879205081612,
+      "prompt_tokens": 125,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-024",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.15672283398453146,
+      "prompt_tokens": 113,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-025",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.14679170795716345,
+      "prompt_tokens": 103,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-026",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15155816602054983,
+      "prompt_tokens": 95,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-027",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.14902891695965081,
+      "prompt_tokens": 110,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-028",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "C",
+      "target": "B",
+      "latency_seconds": 0.14996816695202142,
+      "prompt_tokens": 97,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-029",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.14839904196560383,
+      "prompt_tokens": 101,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-030",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.1569719580002129,
+      "prompt_tokens": 107,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "proc-031",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.15879095904529095,
+      "prompt_tokens": 122,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-032",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.13539316703099757,
+      "prompt_tokens": 114,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "proc-033",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.15306024998426437,
+      "prompt_tokens": 121,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "proc-034",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.15132116700988263,
+      "prompt_tokens": 110,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "proc-035",
+      "category": "procedures",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.14603233302477747,
+      "prompt_tokens": 115,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "proc-036",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "CURP",
+      "target": [
+        "clave unica de registro de poblacion"
+      ],
+      "latency_seconds": 0.0756060000276193,
+      "prompt_tokens": 47,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "curp",
+        "normalized_targets": "clave unica de registro de poblacion"
+      }
+    },
+    {
+      "item_id": "proc-037",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "RFC",
+      "target": [
+        "registro federal de contribuyentes"
+      ],
+      "latency_seconds": 0.1801685830578208,
+      "prompt_tokens": 46,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "rfc",
+        "normalized_targets": "registro federal de contribuyentes"
+      }
+    },
+    {
+      "item_id": "proc-038",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "911",
+      "target": [
+        "911"
+      ],
+      "latency_seconds": 0.10101458395365626,
+      "prompt_tokens": 51,
+      "completion_tokens": 4,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "911",
+        "normalized_targets": "911"
+      }
+    },
+    {
+      "item_id": "proc-039",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "SEGUI",
+      "target": [
+        "renapo"
+      ],
+      "latency_seconds": 0.08918979100417346,
+      "prompt_tokens": 47,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "segui",
+        "normalized_targets": "renapo"
+      }
+    },
+    {
+      "item_id": "proc-040",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "FEAT",
+      "target": [
+        "sat"
+      ],
+      "latency_seconds": 0.09767566598020494,
+      "prompt_tokens": 54,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "feat",
+        "normalized_targets": "sat"
+      }
+    },
+    {
+      "item_id": "proc-041",
+      "category": "procedures",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "SII",
+      "target": [
+        "fiel"
+      ],
+      "latency_seconds": 0.08764749998226762,
+      "prompt_tokens": 53,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "sii",
+        "normalized_targets": "fiel"
+      }
+    },
+    {
+      "item_id": "albur-001",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.21056183299515396,
+      "prompt_tokens": 170,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "albur-002",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.22149304195772856,
+      "prompt_tokens": 162,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "albur-003",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.20815862494055182,
+      "prompt_tokens": 123,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-004",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.2397589999018237,
+      "prompt_tokens": 160,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "albur-005",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.23209404200315475,
+      "prompt_tokens": 158,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "albur-006",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.16911541705485433,
+      "prompt_tokens": 144,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "albur-007",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A)",
+      "target": "A",
+      "latency_seconds": 0.29642299993429333,
+      "prompt_tokens": 192,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-008",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "B",
+      "latency_seconds": 0.2014486660482362,
+      "prompt_tokens": 130,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-009",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.24037808296270669,
+      "prompt_tokens": 165,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "albur-010",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.16996345901861787,
+      "prompt_tokens": 140,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "albur-011",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18083962495438755,
+      "prompt_tokens": 144,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-012",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.1527208749903366,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "albur-013",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "C",
+      "target": "C",
+      "latency_seconds": 0.1344099169364199,
+      "prompt_tokens": 95,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "C"
+      }
+    },
+    {
+      "item_id": "albur-014",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "A",
+      "target": "D",
+      "latency_seconds": 0.15281937504187226,
+      "prompt_tokens": 95,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-015",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18829724995885044,
+      "prompt_tokens": 135,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-016",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.1550497499993071,
+      "prompt_tokens": 111,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "albur-017",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "D",
+      "target": "C",
+      "latency_seconds": 0.1354856250109151,
+      "prompt_tokens": 119,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "albur-018",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "D",
+      "target": "D",
+      "latency_seconds": 0.21446145803201944,
+      "prompt_tokens": 126,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "D"
+      }
+    },
+    {
+      "item_id": "albur-019",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "A",
+      "target": "A",
+      "latency_seconds": 0.18707129207905382,
+      "prompt_tokens": 141,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "A"
+      }
+    },
+    {
+      "item_id": "albur-020",
+      "category": "albur",
+      "eval_type": "multiple_choice",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "B",
+      "target": "B",
+      "latency_seconds": 0.16911558294668794,
+      "prompt_tokens": 147,
+      "completion_tokens": 2,
+      "error": null,
+      "metadata": {
+        "extracted_choice": "B"
+      }
+    },
+    {
+      "item_id": "albur-021",
+      "category": "albur",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "El juego verbal mexicano basado en el doble sentido se llama \"El Juego de las Palabras\".",
+      "target": [
+        "albur",
+        "albures"
+      ],
+      "latency_seconds": 0.36590841598808765,
+      "prompt_tokens": 54,
+      "completion_tokens": 25,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "el juego verbal mexicano basado en el doble sentido se llama el juego de las palabras",
+        "normalized_targets": "albur | albures"
+      }
+    },
+    {
+      "item_id": "albur-022",
+      "category": "albur",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Tostones",
+      "target": [
+        "blanquillos",
+        "blanquillo"
+      ],
+      "latency_seconds": 0.12390099989715964,
+      "prompt_tokens": 59,
+      "completion_tokens": 4,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "tostones",
+        "normalized_targets": "blanquillos | blanquillo"
+      }
+    },
+    {
+      "item_id": "albur-023",
+      "category": "albur",
+      "eval_type": "exact_match",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "Maestro",
+      "target": [
+        "alburero",
+        "alburera"
+      ],
+      "latency_seconds": 0.07816816703416407,
+      "prompt_tokens": 52,
+      "completion_tokens": 3,
+      "error": null,
+      "metadata": {
+        "normalized_candidate": "maestro",
+        "normalized_targets": "alburero | alburera"
+      }
+    }
+  ]
+}
