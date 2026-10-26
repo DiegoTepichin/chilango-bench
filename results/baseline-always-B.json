@@ -1,8 +1,8 @@
 {
   "report_version": 1,
-  "benchmark_version": "0.1.0",
+  "benchmark_version": "1.0.0",
   "model": "baseline-always-B",
-  "created_at": "2026-10-26T20:49:03Z",
+  "created_at": "2026-10-26T20:55:26Z",
   "dataset": {
     "path": "datasets/v1/chilango-bench.jsonl",
     "sha256": "58df56a8684e7af164c8e72c138c1d57f7ffea4704f9f73e8e134be89c622a1c",

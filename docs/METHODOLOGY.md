@@ -71,3 +71,4 @@ To reproduce a published row: check out the commit, run `chilango-bench eval` wi
 - The focus is central Mexico; other regions' slang is underrepresented.
 - Facts about procedures can change (fees, deadlines). Items avoid amounts that change yearly, but reviewers should re-check them.
 - Only small local models have been run so far.
+- Local inference is not perfectly deterministic: re-running llama3.2:3b through Ollama at temperature 0 changed one answer out of 157.
