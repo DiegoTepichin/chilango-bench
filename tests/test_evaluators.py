@@ -232,7 +232,7 @@ def test_evaluation_engine_exact_match_and_rubric() -> None:
     res_em = engine_no_judge.evaluate_item(item_em)
     assert res_em.is_correct is True
 
-    with pytest.raises(EvaluatorError, match="requires a judge runner"):
+    with pytest.raises(EvaluatorError, match="needs a judge model"):
         engine_no_judge.evaluate_item(item_rubric)
 
     # With judge runner
