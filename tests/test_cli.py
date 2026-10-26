@@ -7,7 +7,7 @@ import respx
 
 from chilango_bench.cli import main
 
-SEED = "datasets/v0.1/seed.jsonl"
+SEED = "datasets/v1/chilango-bench.jsonl"
 
 
 def test_requires_a_command(capsys: pytest.CaptureFixture[str]) -> None:
@@ -18,7 +18,9 @@ def test_requires_a_command(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_validate_success(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["validate", SEED]) == 0
-    assert "40 valid items" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "168 valid items" in out
+    assert "longest in 25%" in out
 
 
 def test_validate_failure(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -39,10 +41,10 @@ def test_eval_mock_writes_a_reproducible_report(
     report = json.loads(out.read_text(encoding="utf-8"))
     assert len(report["dataset"]["sha256"]) == 64
     assert report["settings"]["prompt_template"] == "es-v1"
-    assert report["metrics"]["overall"]["accuracy"] == 0.25
+    assert report["metrics"]["eval_types"]["multiple_choice"]["accuracy"] == 0.2537
     captured = capsys.readouterr()
-    assert "mock: 25.0% accuracy" in captured.out
-    assert "[40/40]" in captured.err
+    assert "skipping 11 rubric item(s)" in captured.err
+    assert "[157/157]" in captured.err
 
 
 def test_eval_limit(tmp_path: Path) -> None:

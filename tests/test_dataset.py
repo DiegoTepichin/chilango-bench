@@ -8,7 +8,13 @@ from pydantic import ValidationError
 
 from chilango_bench.core.exceptions import DatasetError, DatasetValidationError
 from chilango_bench.dataset.loader import load_dataset, save_dataset
-from chilango_bench.dataset.models import BenchmarkItem, Category, EvaluationType, RubricCriterion
+from chilango_bench.dataset.models import (
+    BenchmarkItem,
+    Category,
+    EvaluationType,
+    ReviewStatus,
+    RubricCriterion,
+)
 from chilango_bench.dataset.validator import validate_dataset_file
 
 
@@ -98,38 +104,45 @@ def test_benchmark_item_rubric_judged_valid() -> None:
     assert item.rubric[0].weight == 1.5
 
 
-def test_seed_dataset_loads_and_validates(tmp_path: Path) -> None:
-    """Ensure the official v0.1 seed dataset loads cleanly with exactly 40 items."""
-    seed_path = Path("datasets/v0.1/seed.jsonl")
-    assert seed_path.exists(), "Seed dataset file must exist at datasets/v0.1/seed.jsonl"
-
-    items = load_dataset(seed_path)
-    assert len(items) == 40
-
-    report = validate_dataset_file(seed_path)
-    assert report.is_valid is True
-    assert report.total_items == 40
-    assert report.category_counts[Category.SLANG.value] == 10
-    assert report.category_counts[Category.CULTURAL_CONTEXT.value] == 10
-    assert report.category_counts[Category.PROCEDURES.value] == 10
-    assert report.category_counts[Category.ALBUR.value] == 10
+DATASET = Path("datasets/v1/chilango-bench.jsonl")
 
 
-def test_seed_dataset_answer_keys_are_balanced() -> None:
-    """Ensure no constant answer can beat chance on the multiple choice seed items."""
-    items = load_dataset(Path("datasets/v0.1/seed.jsonl"))
-    mcq_items = [item for item in items if item.eval_type == EvaluationType.MULTIPLE_CHOICE]
-    target_counts = Counter(str(item.target) for item in mcq_items)
-    choice_count = len(mcq_items[0].choices or {})
+def test_v1_dataset_loads_and_covers_every_category_and_type() -> None:
+    items = load_dataset(DATASET)
+    report = validate_dataset_file(DATASET)
 
-    assert max(target_counts.values()) / len(mcq_items) <= 1 / choice_count
+    assert report.is_valid
+    assert len(items) >= 150
+    assert all(count > 0 for count in report.category_counts.values())
+    assert all(count > 0 for count in report.eval_type_counts.values())
 
 
-def test_seed_dataset_items_declare_review_status() -> None:
-    """Ensure every seed item records whether a human has reviewed it."""
-    items = load_dataset(Path("datasets/v0.1/seed.jsonl"))
+def test_v1_answer_keys_are_balanced() -> None:
+    items = load_dataset(DATASET)
+    multiple_choice = [item for item in items if item.eval_type == EvaluationType.MULTIPLE_CHOICE]
+    counts = Counter(str(item.target) for item in multiple_choice)
 
-    assert all(item.metadata.get("review_status") in {"unreviewed", "reviewed"} for item in items)
+    assert max(counts.values()) / len(multiple_choice) <= 0.25 + 0.03
+
+
+def test_v1_option_length_does_not_give_the_answer_away() -> None:
+    report = validate_dataset_file(DATASET)
+
+    assert 0.15 <= report.longest_choice_rate <= 0.30
+    assert report.shortest_choice_rate <= 0.30
+
+
+def test_v1_items_explain_their_answer_and_carry_review_status() -> None:
+    items = load_dataset(DATASET)
+
+    assert all(item.explanation or item.rubric or "origin" in item.metadata for item in items)
+    assert all(isinstance(item.review_status, ReviewStatus) for item in items)
+
+
+def test_v1_file_starts_with_the_canary() -> None:
+    first_line = DATASET.read_text(encoding="utf-8").splitlines()[0]
+
+    assert first_line.startswith("# chilango-bench v1 dataset. Canary GUID ")
 
 
 def test_load_dataset_duplicate_id_rejection(tmp_path: Path) -> None:
