@@ -1,115 +1,112 @@
 # chilango-bench
 
-**A reproducible benchmark for evaluating LLMs on Mexican Spanish** — slang, cultural literacy, civic procedures, and wordplay (*albur*).
+**Does your LLM actually understand Mexican Spanish?** A reproducible benchmark of slang, Mexico City culture, government procedures and *albur*, with an open dataset and a harness that runs against local and API models.
 
 [![CI](https://github.com/DiegoTepichin/chilango-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/DiegoTepichin/chilango-bench/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.11%20|%203.12%20|%203.13%20|%203.14-blue)](https://github.com/DiegoTepichin/chilango-bench)
-[![mypy strict](https://img.shields.io/badge/mypy-strict-blue)](https://mypy.readthedocs.io)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+[![Dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC%20BY%204.0-green.svg)](datasets/README.md)
 
-> **Status: pre-release.** The harness works end to end, but the seed dataset has not been human-reviewed yet and no real model results have been published. Do not cite scores from this repository yet.
+[Leer en español](README.es.md)
 
----
+> **Status:** v1.0. The 168 dataset items have **not yet been reviewed** by a native speaker, so the scores below are preliminary. Review is built in: `chilango-bench review`.
 
 ## Why
 
-Standard Spanish NLP benchmarks evaluate formal Castilian or generic Latin American Spanish. They miss the pragmatic reality of Mexican Spanish — spoken by over 130 million people. An LLM failing to distinguish *"¡cámara!"* (agreement/goodbye) from a camera apparatus, or hallucinating SAT procedures vs. RENAPO workflows, breaks real-world trust.
+Spanish benchmarks are usually translations from English or neutral Spanish. They do not tell you whether a model knows that *ahorita* may mean "never", that *¡aguas!* is a warning, how many characters a CURP has, or how to take an *albur* without being either prudish or vulgar. If you are putting an LLM in front of Mexican users, that is what matters.
 
-`chilango-bench` provides a deterministic, reproducible evaluation suite to score and compare models before deploying them in Mexico.
+## Results
 
-## Architecture
+Small open models, run locally with Ollama 0.40.6 at temperature 0 on the 157 automatically graded items (rubric items need a judge model and are not included). Every row comes from a committed report in [`results/`](results/).
 
-```mermaid
-flowchart LR
-    D[("📁 JSONL Dataset\nseed.jsonl")] --> V["🛡️ Schema Validator\nPydantic v2"]
-    V --> E["⚙️ Evaluation Engine"]
+| Rank | Model | Accuracy (95% CI) | Slang | Culture | Procedures | Albur | Unresolved | Items |
+|---:|:---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | `llama3.2:3b` | 61.8% (54%-69%) | 63.5% | 70.7% | 48.8% | 65.2% | 6 | 157 |
+| 2 | `qwen2.5:1.5b` | 55.4% (48%-63%) | 42.3% | 51.2% | 65.8% | 73.9% | 0 | 157 |
+| 3 | `gemma3:1b` | 40.1% (32%-48%) | 26.9% | 43.9% | 46.3% | 52.2% | 0 | 157 |
+| 4 | `baseline-always-B` | 21.7% (15%-29%) | 23.1% | 19.5% | 21.9% | 21.7% | 0 | 157 |
 
-    subgraph Runners ["Model Runners"]
-        R1["🌐 OpenAIRunner\nany OpenAI-compatible endpoint"]
-        R2["🧪 MockRunner\n100% Offline CI"]
-    end
+What the reports show:
 
-    R1 -.-> E
-    R2 -.-> E
+- **Slang is the hardest category for small models.** gemma3:1b is close to chance on it; qwen2.5:1.5b knows procedures better than slang.
+- **Over-refusal is a failure mode.** All six of llama3.2:3b's unresolved answers are refusals: it declined to say what *"¡Ya se la saben!"* means on a bus, to explain what an albur is, and to answer a question about a 2023 labour reform.
+- **Exact recall is weak.** On the 23 short-answer items the best model scores 43%. Asked what RFC stands for, llama3.2:3b answered "Request for Comments"; asked which agency issues the CURP (RENAPO), the models invented acronyms such as "SENASAL" and "SEGUI".
+- Per-category intervals are wide (about ±15 points with ~40 items), so differences inside them are not meaningful yet.
 
-    E --> J{"Grading\nEngine"}
-    J -->|Deterministic| MC["Multiple Choice\n& Exact Match"]
-    J -->|Qualitative| RB["LLM-as-a-Judge\nRubric 1–5"]
+Re-running the same model can change one or two answers even at temperature 0; llama3.2:3b moved by one item between two runs.
 
-    MC --> A["📊 Metrics\nAccuracy · Latency · Tokens"]
-    RB --> A
+## What is in the benchmark
 
-    A --> OUT1["📄 JSON Run Bundle\nresults/*.json"]
-    A --> OUT2["🏆 Markdown Leaderboard"]
-```
+168 original items ([datasheet](datasets/README.md)), CC BY 4.0:
 
-## Benchmark dimensions
+| Category | Items | Examples of what is tested |
+|---|---|---|
+| Slang | 55 | *chido*, *ahorita*, *no hay pedo*, *hacer la vaca*, *¿a poco?* |
+| Cultural context | 44 | Metro, *pambazo*, posadas, the 19 September earthquakes, *viene viene* |
+| Procedures | 44 | CURP, RFC, SAT, INE, IMSS, aguinaldo, Hoy No Circula |
+| Albur | 25 | Recognising the double-entendre game and responding appropriately, without explicit content |
 
-| Category | Description |
-| :--- | :--- |
-| **Slang** | Colloquial lexicon, pragmatic discourse markers, register shifts (*chilangismos*) |
-| **Cultural context** | CDMX Metro system, traditions, urban geography, food |
-| **Procedures** | Real-world admin navigation: SAT, CURP, RFC, e.firma, licencias |
-| **Albur** | Wordplay, innuendo detection, double entendre resolution |
+134 multiple-choice, 23 exact-match and 11 rubric items. Answer keys are balanced, and the correct option is the longest in only 25% of items, so neither "always B" nor "pick the longest" beats chance. The file carries a canary GUID for training-corpus filtering.
 
-The seed dataset (`v0.1`) ships with 40 multiple-choice items, 10 per category, with answer keys spread evenly across A–D. Every item is marked `review_status: unreviewed` until a human verifies it.
+## How grading works
+
+- **Multiple choice:** only an explicit answer counts (a bare letter, `B) ...`, "la respuesta es C", or the full text of one option). A stray letter inside a sentence never counts, because *a*, *e*, *o* and *y* are Spanish words. Anything else is *unresolved* and graded wrong.
+- **Exact match:** accent-, case- and punctuation-insensitive match against accepted answers.
+- **Rubric:** an LLM judge scores 1-5; unreadable judge output is an error, never a made-up score.
+- **Scores** come with 95% bootstrap intervals. Reports pin the dataset SHA-256, prompt template and generation settings; the leaderboard never ranks runs that are not comparable.
+
+Details in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## Quickstart
 
-Requires Python 3.11+ and [`uv`](https://docs.astral.sh/uv/).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 git clone https://github.com/DiegoTepichin/chilango-bench.git
 cd chilango-bench
 uv sync
+uv run chilango-bench validate datasets/v1/chilango-bench.jsonl
 ```
 
-### Validate dataset
+### Run a local model with Ollama
 
 ```bash
-uv run chilango-bench validate datasets/v0.1/seed.jsonl
+ollama pull qwen2.5:1.5b
+uv run chilango-bench eval -d datasets/v1/chilango-bench.jsonl -m qwen2.5:1.5b -p ollama -o runs/qwen.json
 ```
 
-### Run evaluation
+### Run any OpenAI-compatible API
 
 ```bash
-# Offline mock run (no API key needed)
-uv run chilango-bench eval \
-  --dataset datasets/v0.1/seed.jsonl \
-  --model mock-model \
-  --provider mock \
-  --output results/mock-run.json
-
-# OpenAI-compatible endpoint (set OPENAI_BASE_URL for providers other than OpenAI)
-export OPENAI_API_KEY="your-api-key"
-uv run chilango-bench eval \
-  --dataset datasets/v0.1/seed.jsonl \
-  --model gpt-4o-mini \
-  --output results/gpt-4o-mini.json
+export OPENAI_API_KEY=...            # see .env.example
+uv run chilango-bench eval -d datasets/v1/chilango-bench.jsonl -m gpt-4o-mini -p openai -o runs/gpt-4o-mini.json
+# other providers: add --base-url https://api.groq.com/openai/v1 (or any compatible endpoint)
 ```
 
-### Generate leaderboard
+Add `--judge <model>` to grade the rubric items, `--limit 10` for a smoke test, `--accepted-only` to score only reviewed items.
+
+### Build a leaderboard
 
 ```bash
-uv run chilango-bench leaderboard --results-dir results
+uv run chilango-bench leaderboard -r runs
 ```
 
-## Leaderboard
+## Contributing
 
-No results yet. Real model runs will be published here, each backed by its JSON run report, once the seed dataset has been reviewed.
+The most valuable contributions are **reviews** and **new items**:
+
+```bash
+uv run chilango-bench review datasets/v1/chilango-bench.jsonl --reviewer your-github-handle
+```
+
+shows each unreviewed item with its answer and explanation and records your decision in the file. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [datasheet](datasets/README.md). Result reports for other models are welcome too: open a PR with the JSON in `results/`.
 
 ## Development
 
 ```bash
-uv run ruff check .          # lint
-uv run ruff format --check . # format
-uv run mypy .                # type check
-uv run pytest                # test suite (100% offline)
+uv run ruff check . && uv run ruff format --check . && uv run mypy .
+uv run pytest          # offline, no API keys needed
 ```
-
-All checks must pass before merging. CI runs the full matrix across Python 3.11–3.14.
 
 ## License
 
-[MIT](LICENSE)
+Code: [MIT](LICENSE). Dataset: [CC BY 4.0](datasets/README.md). © Diego Tepichin
