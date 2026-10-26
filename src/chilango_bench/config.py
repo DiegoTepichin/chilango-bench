@@ -10,7 +10,7 @@ class Settings:
 
     openai_api_key: str | None = None
     openai_base_url: str = "https://api.openai.com/v1"
-    log_level: str = "INFO"
+    ollama_base_url: str = "http://localhost:11434/v1"
     timeout_seconds: float = 30.0
     max_retries: int = 3
 
@@ -26,7 +26,7 @@ def get_settings() -> Settings:
     if not base_url:
         base_url = "https://api.openai.com/v1"
 
-    log_level = os.getenv("CHILANGO_LOG_LEVEL", "INFO").strip().upper()
+    ollama_base_url = os.getenv("OLLAMA_BASE_URL", "").strip() or "http://localhost:11434/v1"
 
     try:
         timeout = float(os.getenv("CHILANGO_TIMEOUT_SECONDS", "30.0"))
@@ -41,7 +41,7 @@ def get_settings() -> Settings:
     return Settings(
         openai_api_key=api_key,
         openai_base_url=base_url,
-        log_level=log_level,
+        ollama_base_url=ollama_base_url,
         timeout_seconds=timeout,
         max_retries=retries,
     )
