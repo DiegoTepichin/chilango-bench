@@ -10,11 +10,9 @@ A benchmark of large language models on Mexican Spanish: slang, cultural context
 
 Developers and companies choosing an LLM for products in Mexico, and NLP researchers working on Spanish.
 
-## Scope (v0.1)
+## Scope
 
-To be defined in `docs/PLAN.md` during the planning session.
-
-Anything else is out of scope until v0.1 ships.
+v1.0 scope lives in `docs/PLAN.md`; methodology in `docs/METHODOLOGY.md`. Ideas beyond it go to GitHub issues.
 
 ## Code standards
 
@@ -29,16 +27,13 @@ Anything else is out of scope until v0.1 ships.
 
 ## Commands
 
-- `uv sync`: Install project and development dependencies.
-- `uv run ruff check .`: Lint Python source files.
-- `uv run ruff format --check .`: Verify code formatting.
-- `uv run mypy .`: Run strict static type checking.
-- `uv run pytest`: Execute test suite offline.
-- `uv run chilango-bench --version`: Display package version.
-- `uv run chilango-bench validate datasets/v0.1/seed.jsonl`: Validate JSONL dataset schema and categories.
-- `uv run chilango-bench eval --dataset <path> --model <model> [--provider mock|openai] [--output <report.json>]`: Evaluate model against benchmark.
-- `uv run chilango-bench leaderboard --results-dir <dir>`: Generate markdown leaderboard table from report artifacts.
+- `uv sync`: install the project and dev dependencies.
+- `uv run ruff check .` / `uv run ruff format --check .` / `uv run mypy .` / `uv run pytest`: the CI checks.
+- `uv run chilango-bench validate datasets/v1/chilango-bench.jsonl`: schema, counts, review status and option-length bias.
+- `uv run chilango-bench eval -d <dataset> -m <model> -p mock|openai|ollama [--base-url] [--judge] [--limit] [--accepted-only] -o <report.json>`: run a model.
+- `uv run chilango-bench review <dataset> --reviewer <handle>`: interactive item review.
+- `uv run chilango-bench leaderboard -r results`: Markdown leaderboard from reports.
 
 ## Structure
 
-Defined in `docs/PLAN.md`. Core package lives in `src/chilango_bench`, tests in `tests/`, datasets in `datasets/`.
+Package in `src/chilango_bench` (`dataset/`, `runners/`, `evaluators/`, `reporting/`, `cli.py`), tests in `tests/`, dataset in `datasets/v1/`, published run reports in `results/`, scratch runs in the ignored `runs/`.

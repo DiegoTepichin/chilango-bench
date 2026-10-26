@@ -55,7 +55,7 @@ Offline only: mock runners and recorded HTTP responses (`respx`). Grading edge c
 
 ## Launch checklist
 
-- [ ] CI green on main.
-- [ ] Leaderboard built only from committed reports.
-- [ ] README states the dataset review status.
+- [x] CI green on main.
+- [x] Leaderboard built only from committed reports.
+- [x] README states the dataset review status.
 - [ ] Tag `v1.0.0`.
