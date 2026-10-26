@@ -164,8 +164,8 @@ def test_aggregate_metrics_calculations() -> None:
     assert metrics.total_items == 3
     assert metrics.correct_items == 2
     assert metrics.accuracy == round(2 / 3, 4)
-    assert metrics.category_scores[Category.SLANG.value] == 0.5
-    assert metrics.category_scores[Category.PROCEDURES.value] == 1.0
+    assert metrics.categories[Category.SLANG.value].accuracy == 0.5
+    assert metrics.categories[Category.PROCEDURES.value].accuracy == 1.0
     assert metrics.total_prompt_tokens == 35
     assert metrics.total_completion_tokens == 7
 
@@ -337,10 +337,16 @@ def test_unreadable_judge_output_is_an_error_not_a_score(judge_output: str) -> N
 
 
 def test_judge_errors_are_excluded_from_accuracy() -> None:
-    graded = EvaluationResult("a", Category.SLANG, EvaluationType.RUBRIC_JUDGED, 1.0, True, "", "")
-    failed = EvaluationResult(
-        "b", Category.SLANG, EvaluationType.RUBRIC_JUDGED, 0.0, False, "", "", error="judge"
+    graded = EvaluationResult(
+        item_id="a",
+        category=Category.SLANG,
+        eval_type=EvaluationType.RUBRIC_JUDGED,
+        score=1.0,
+        is_correct=True,
+        model_response="",
+        target="",
     )
+    failed = graded.model_copy(update={"item_id": "b", "is_correct": False, "error": "judge"})
 
     metrics = aggregate_metrics([graded, failed])
 
