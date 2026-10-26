@@ -1,5 +1,5 @@
-"""Chilango-bench: Benchmark for LLMs on Mexican Spanish nuances."""
+"""Benchmark of large language models on Mexican Spanish."""
 
-__version__ = "0.1.0"
+from importlib.metadata import version
 
-__all__ = ["__version__"]
+__version__ = version("chilango-bench")
