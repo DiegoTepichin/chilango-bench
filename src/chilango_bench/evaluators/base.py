@@ -1,19 +1,21 @@
-"""Base models and interfaces for evaluation and grading."""
+"""Grading result model and evaluator interface."""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from chilango_bench.dataset.models import BenchmarkItem, Category, EvaluationType
 
 
-@dataclass(frozen=True)
-class EvaluationResult:
-    """Outcome of grading a single benchmark item."""
+class EvaluationResult(BaseModel):
+    """Outcome of grading one benchmark item."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
     item_id: str
     category: Category
     eval_type: EvaluationType
-    score: float  # Normalized score from 0.0 to 1.0
+    score: float = Field(ge=0.0, le=1.0)
     is_correct: bool
     model_response: str
     target: str | list[str]
@@ -22,20 +24,11 @@ class EvaluationResult:
     completion_tokens: int = 0
     error: str | None = None
     """Set when the item could not be graded (runner or judge failure); excluded from accuracy."""
-    metadata: dict[str, object] = field(default_factory=dict)
+    metadata: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class BaseEvaluator(ABC):
-    """Abstract interface for grading candidate outputs."""
+    """Grades a candidate model's response to one item."""
 
     @abstractmethod
-    def evaluate(self, item: BenchmarkItem, response_text: str) -> EvaluationResult:
-        """Grade a model's textual response against the benchmark item target.
-
-        Args:
-            item: The benchmark question item.
-            response_text: The candidate model's raw completion output.
-
-        Returns:
-            EvaluationResult containing the computed score and grading details.
-        """
+    def evaluate(self, item: BenchmarkItem, response_text: str) -> EvaluationResult: ...
