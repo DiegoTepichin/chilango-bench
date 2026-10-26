@@ -113,14 +113,10 @@ def test_rubric_judge_evaluator() -> None:
     assert res.is_correct is True
     assert res.metadata["judge_raw_score"] == 5
 
-    # Mock judge returning fallback regex score 3
-    mock_judge_regex = MockRunner(
-        default_response="Mi puntuación final es un 3 para esta respuesta."
-    )
-    evaluator_regex = RubricJudgeEvaluator(mock_judge_regex)
-    res_regex = evaluator_regex.evaluate(item, "Respuesta parcial")
-    assert res_regex.score == 0.5  # (3-1)/4 = 0.5
-    assert res_regex.is_correct is True
+    labelled = RubricJudgeEvaluator(MockRunner(default_response="score: 3 (parcial)"))
+    res_labelled = labelled.evaluate(item, "Respuesta parcial")
+    assert res_labelled.score == 0.5
+    assert res_labelled.error is None
 
 
 def test_aggregate_metrics_calculations() -> None:
@@ -287,7 +283,6 @@ def test_extract_choice_key_ambiguous_and_edge_cases() -> None:
     """Ensure extract_choice_key handles edge cases without false positives."""
     choices = {"A": "Sí", "B": "No", "C": "Tal vez"}
 
-    # Single-letter match case-insensitive
     assert extract_choice_key("a", choices) == "A"
 
     # Response that matches choice text value
@@ -316,33 +311,86 @@ def test_exact_match_evaluator_single_string_target() -> None:
     assert res_wrong.is_correct is False
 
 
-def test_rubric_judge_score_clamping() -> None:
-    """Ensure RubricJudgeEvaluator clamps out-of-range scores from judge to [1, 5]."""
+@pytest.mark.parametrize(
+    "judge_output",
+    [
+        '{"score": 10, "justification": "fuera de rango"}',
+        '{"score": 0}',
+        "Mi puntuación final es un 3 para esta respuesta.",
+        "No puedo evaluar esto.",
+        '{"score": "cinco"}',
+    ],
+)
+def test_unreadable_judge_output_is_an_error_not_a_score(judge_output: str) -> None:
     item = BenchmarkItem(
-        id="rubric-clamp",
+        id="rubric-error",
         category=Category.ALBUR,
         eval_type=EvaluationType.RUBRIC_JUDGED,
         prompt="Explica el albur",
         target="Referencia",
     )
 
-    # Score 10 must be clamped to 5 → normalized to 1.0
-    mock_judge_high = MockRunner(
-        default_response='{"score": 10, "justification": "Excelente pero fuera de rango"}'
-    )
-    evaluator_high = RubricJudgeEvaluator(mock_judge_high)
-    res_high = evaluator_high.evaluate(item, "Respuesta candidata")
-    assert res_high.metadata["judge_raw_score"] == 5
-    assert res_high.score == 1.0
+    result = RubricJudgeEvaluator(MockRunner(default_response=judge_output)).evaluate(item, "x")
 
-    # Score 0 must be clamped to 1 → normalized to 0.0
-    mock_judge_low = MockRunner(
-        default_response='{"score": 0, "justification": "Fuera de rango bajo"}'
+    assert result.error is not None
+    assert result.is_correct is False
+
+
+def test_judge_errors_are_excluded_from_accuracy() -> None:
+    graded = EvaluationResult("a", Category.SLANG, EvaluationType.RUBRIC_JUDGED, 1.0, True, "", "")
+    failed = EvaluationResult(
+        "b", Category.SLANG, EvaluationType.RUBRIC_JUDGED, 0.0, False, "", "", error="judge"
     )
-    evaluator_low = RubricJudgeEvaluator(mock_judge_low)
-    res_low = evaluator_low.evaluate(item, "Respuesta sin sentido")
-    assert res_low.metadata["judge_raw_score"] == 1
-    assert res_low.score == 0.0
+
+    metrics = aggregate_metrics([graded, failed])
+
+    assert metrics.accuracy == 1.0
+    assert (metrics.graded_items, metrics.errored_items) == (1, 1)
+
+
+CHOICES = {"A": "Metro Pantitlán", "B": "La Raza", "C": "Tasqueña", "D": "Indios Verdes"}
+
+
+@pytest.mark.parametrize(
+    ("response", "expected"),
+    [
+        ("B", "B"),
+        ("**C**", "C"),
+        ("(d)", "D"),
+        ("b) La Raza", "B"),
+        ("D. Indios Verdes", "D"),
+        ("A Metro Pantitlán es la terminal", "A"),
+        ("La respuesta correcta es la C.", "C"),
+        ("Respuesta: d", "D"),
+        ("Opción B, porque conecta con la línea 5.", "B"),
+        ("Considero que la estación es Metro Pantitlán.", "A"),
+    ],
+)
+def test_extracts_explicit_answers(response: str, expected: str) -> None:
+    assert extract_choice_key(response, CHOICES) == expected
+
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        "Creo que es la estación que está a la salida a Puebla",
+        "a mi parecer no lo sé",
+        "y luego cambias de línea",
+        "La respuesta es A o C, no estoy seguro",
+        "Entre La Raza e Indios Verdes, me quedo con La Raza o Indios Verdes",
+        "E",
+        "",
+    ],
+)
+def test_does_not_guess_from_loose_letters_or_ambiguity(response: str) -> None:
+    assert extract_choice_key(response, CHOICES) is None
+
+
+def test_short_option_texts_are_not_matched_inside_sentences() -> None:
+    choices = {"A": "Sí", "B": "No", "C": "Tal vez"}
+
+    assert extract_choice_key("No sé, tal vez", choices) == "C"
+    assert extract_choice_key("No estoy seguro", choices) is None
 
 
 def test_aggregate_metrics_all_incorrect() -> None:

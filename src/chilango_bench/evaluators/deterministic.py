@@ -6,6 +6,7 @@ import unicodedata
 from chilango_bench.core.exceptions import EvaluatorError
 from chilango_bench.dataset.models import BenchmarkItem, EvaluationType
 from chilango_bench.evaluators.base import BaseEvaluator, EvaluationResult
+from chilango_bench.evaluators.metrics import UNRESOLVED
 
 
 def normalize_text(text: str) -> str:
@@ -19,46 +20,64 @@ def normalize_text(text: str) -> str:
     return " ".join(without_punct.split()).strip()
 
 
+MIN_CHOICE_TEXT_LENGTH = 4
+_MARKUP = re.compile(r"[*_`#>]")
+_BARE_KEY = re.compile(r"^\(?([A-Za-z])\)?[.:]?$")
+_LEADING_KEY = re.compile(r"^(?:\(([A-Za-z])\)|([A-Za-z])[).:]|([A-Z])\s)")
+_ALTERNATIVE = re.compile(r"^\)?\s*(?:,|o|u|y|ni)\s+\(?[A-Za-z]\b", re.IGNORECASE)
+_KEYWORD_KEY = re.compile(
+    r"\b(?:opci[oó]n|respuesta|letra|inciso)(?:\s+correcta)?(?:\s+es)?(?:\s+la)?"
+    r"\s*[:\-]?\s*\(?([A-Za-z])\b",
+    re.IGNORECASE,
+)
+
+
 def extract_choice_key(response_text: str, choices: dict[str, str]) -> str | None:
-    """Extract choice key (e.g. 'A', 'B') from candidate response."""
-    text = response_text.strip()
-    valid_keys = set(choices.keys())
+    """Return the option the response commits to, or None when it is missing or ambiguous.
 
-    # Case 1: Response starts directly with a single key followed by punctuation or space
-    direct_match = re.match(r"^([A-Za-z])[\.\)\s\:\-]", text)
-    if direct_match:
-        key = direct_match.group(1).upper()
-        if key in valid_keys:
-            return key
+    Only explicit forms count: a bare letter ("B", "(b)"), a leading letter with punctuation
+    ("B) ...", "b. ..."), a keyword ("la respuesta es C") or the full text of exactly one option.
+    A loose single letter inside a sentence never counts: in Spanish "a", "e", "o" and "y" are
+    words.
+    """
+    text = _MARKUP.sub("", response_text).strip()
+    valid = {key.upper() for key in choices}
+    for candidate in (_bare_key(text), _leading_key(text), _keyword_key(text)):
+        if candidate is not None:
+            return candidate if candidate in valid else None
+    return _choice_text_key(text, choices)
 
-    # Case 2: Exact single letter response
-    if len(text) == 1 and text.upper() in valid_keys:
-        return text.upper()
 
-    # Case 3: Explicit phrase like "Opción B", "Respuesta: B", "La letra B"
-    phrase_match = re.search(
-        r"(?:opci[oó]n|respuesta|letra)\s*[:\s\-]*\s*([A-Za-z])\b", text, re.IGNORECASE
-    )
-    if phrase_match:
-        key = phrase_match.group(1).upper()
-        if key in valid_keys:
-            return key
+def _bare_key(text: str) -> str | None:
+    match = _BARE_KEY.match(text)
+    return match.group(1).upper() if match else None
 
-    # Case 4: First isolated token matching a choice key
-    isolated_match = re.search(r"\b([A-Za-z])\b", text)
-    if isolated_match:
-        key = isolated_match.group(1).upper()
-        if key in valid_keys:
-            return key
 
-    # Case 5: The response text contains the exact value of one of the choices
-    normalized_response = normalize_text(text)
-    for key, choice_text in choices.items():
-        norm_choice = normalize_text(choice_text)
-        if norm_choice and norm_choice in normalized_response:
-            return key
+def _leading_key(text: str) -> str | None:
+    match = _LEADING_KEY.match(text)
+    if not match:
+        return None
+    return next(g for g in match.groups() if g).upper()
 
-    return None
+
+def _keyword_key(text: str) -> str | None:
+    keys: set[str] = set()
+    for match in _KEYWORD_KEY.finditer(text):
+        if _ALTERNATIVE.match(text[match.end() :]):
+            return None
+        keys.add(match.group(1).upper())
+    return keys.pop() if len(keys) == 1 else None
+
+
+def _choice_text_key(text: str, choices: dict[str, str]) -> str | None:
+    response = f" {normalize_text(text)} "
+    matches = [
+        key.upper()
+        for key, value in choices.items()
+        if len(normalized := normalize_text(value)) >= MIN_CHOICE_TEXT_LENGTH
+        and f" {normalized} " in response
+    ]
+    return matches[0] if len(matches) == 1 else None
 
 
 class MultipleChoiceEvaluator(BaseEvaluator):
@@ -84,7 +103,7 @@ class MultipleChoiceEvaluator(BaseEvaluator):
             is_correct=is_correct,
             model_response=response_text,
             target=item.target,
-            metadata={"extracted_choice": extracted_key or "UNRESOLVED"},
+            metadata={"extracted_choice": extracted_key or UNRESOLVED},
         )
 
 
