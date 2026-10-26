@@ -14,7 +14,7 @@ class MockRunner(BaseRunner):
         simulated_latency: float = 0.005,
         simulated_tokens: tuple[int, int] = (15, 5),
         should_raise: Exception | None = None,
-    ):
+    ) -> None:
         super().__init__(model_name)
         self.default_response = default_response
         self.canned_responses = canned_responses or {}

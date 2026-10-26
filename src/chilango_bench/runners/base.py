@@ -19,7 +19,7 @@ class RunnerResponse:
 class BaseRunner(ABC):
     """Abstract base class for all model runners."""
 
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str) -> None:
         self.model_name = model_name
 
     @abstractmethod
