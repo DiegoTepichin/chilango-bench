@@ -8,6 +8,9 @@ from chilango_bench.evaluators.judge import RubricJudgeEvaluator
 from chilango_bench.evaluators.metrics import BenchmarkMetrics, aggregate_metrics
 from chilango_bench.runners.base import BaseRunner
 
+PROMPT_TEMPLATE = "es-v1"
+"""Bump whenever `format_eval_prompt` changes, so old and new runs are never ranked together."""
+
 
 def format_eval_prompt(item: BenchmarkItem) -> str:
     """Format prompt with choices if multiple choice."""
@@ -55,20 +58,12 @@ class EvaluationEngine:
         else:
             raise EvaluatorError(f"Unsupported evaluation type: {item.eval_type}")
 
-        # Incorporate latency and token consumption from runner response
-        return EvaluationResult(
-            item_id=eval_res.item_id,
-            category=eval_res.category,
-            eval_type=eval_res.eval_type,
-            score=eval_res.score,
-            is_correct=eval_res.is_correct,
-            model_response=eval_res.model_response,
-            target=eval_res.target,
-            latency_seconds=response.latency_seconds,
-            prompt_tokens=response.prompt_tokens,
-            completion_tokens=response.completion_tokens,
-            error=eval_res.error,
-            metadata=eval_res.metadata,
+        return eval_res.model_copy(
+            update={
+                "latency_seconds": response.latency_seconds,
+                "prompt_tokens": response.prompt_tokens,
+                "completion_tokens": response.completion_tokens,
+            }
         )
 
     def run_benchmark(

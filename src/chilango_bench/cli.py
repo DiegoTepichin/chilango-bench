@@ -9,15 +9,11 @@ from typing import TYPE_CHECKING
 
 from chilango_bench import __version__
 from chilango_bench.core.exceptions import ChilangoBenchError
-from chilango_bench.dataset.loader import load_dataset
+from chilango_bench.dataset.loader import file_sha256, load_dataset
 from chilango_bench.dataset.validator import validate_dataset_file
-from chilango_bench.evaluators.engine import EvaluationEngine
-from chilango_bench.reporting.leaderboard import (
-    generate_leaderboard_markdown,
-    load_reports_from_directory,
-    save_run_report,
-)
-from chilango_bench.reporting.models import BenchmarkRunReport
+from chilango_bench.evaluators.engine import PROMPT_TEMPLATE, EvaluationEngine
+from chilango_bench.reporting.leaderboard import leaderboard_markdown, load_reports
+from chilango_bench.reporting.models import DatasetInfo, RunReport, RunSettings
 from chilango_bench.runners.factory import create_runner
 
 if TYPE_CHECKING:
@@ -116,15 +112,17 @@ def run_eval(
     engine = EvaluationEngine(runner=runner, judge_runner=judge_runner)
     results, metrics = engine.run_benchmark(items)
 
-    acc_pct = metrics.accuracy * 100
     sys.stdout.write("\n================ Benchmark Results ================\n")
     sys.stdout.write(f"Model: {model}\n")
     sys.stdout.write(
-        f"Overall Accuracy: {acc_pct:.2f}% ({metrics.correct_items}/{metrics.total_items})\n"
+        f"Accuracy: {metrics.accuracy:.1%} ({metrics.correct_items}/{metrics.graded_items}), "
+        f"95% CI {metrics.overall.ci_low:.0%}-{metrics.overall.ci_high:.0%}\n"
     )
     sys.stdout.write("Category Accuracy:\n")
-    for cat, score in sorted(metrics.category_scores.items()):
-        sys.stdout.write(f"  - {cat}: {score * 100:.2f}%\n")
+    for cat, score in metrics.categories.items():
+        sys.stdout.write(
+            f"  - {cat}: {score.accuracy:.1%} ({score.ci_low:.0%}-{score.ci_high:.0%})\n"
+        )
     sys.stdout.write(
         f"Mean Latency: {metrics.mean_latency_seconds:.3f}s "
         f"(Total: {metrics.total_latency_seconds:.3f}s)\n"
@@ -136,15 +134,27 @@ def run_eval(
     sys.stdout.write("===================================================\n")
 
     if output_path:
-        run_report = BenchmarkRunReport(
+        report = RunReport(
             benchmark_version=__version__,
-            model_name=model,
-            timestamp_utc=datetime.datetime.now(datetime.UTC).isoformat(),
-            dataset_path=dataset_path,
+            model=model,
+            created_at=datetime.datetime.now(datetime.UTC).replace(microsecond=0),
+            dataset=DatasetInfo(
+                path=Path(dataset_path).as_posix(),
+                sha256=file_sha256(dataset_path),
+                items=len(items),
+            ),
+            settings=RunSettings(
+                provider=provider,
+                base_url=getattr(runner, "base_url", None),
+                temperature=0.0,
+                max_tokens=512,
+                prompt_template=PROMPT_TEMPLATE,
+                judge_model=judge_model,
+            ),
             metrics=metrics,
             results=results,
         )
-        save_run_report(run_report, output_path)
+        report.save(output_path)
         sys.stdout.write(f"Saved run report artifact to: {output_path}\n")
 
     return 0
@@ -152,15 +162,11 @@ def run_eval(
 
 def run_leaderboard(results_dir: str) -> int:
     """Handle 'leaderboard' subcommand."""
-    dir_path = Path(results_dir)
-    if not dir_path.is_dir():
-        sys.stderr.write(f"Results directory does not exist: {dir_path}\n")
-        return 1
-
-    reports = load_reports_from_directory(dir_path)
-    table = generate_leaderboard_markdown(reports)
-    sys.stdout.write(f"\n{table}\n")
-    return 0
+    loaded = load_reports(results_dir)
+    for error in loaded.invalid:
+        sys.stderr.write(f"skipped: {error}\n")
+    sys.stdout.write(leaderboard_markdown(loaded.reports))
+    return 1 if loaded.invalid else 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

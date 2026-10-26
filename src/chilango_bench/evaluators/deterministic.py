@@ -140,5 +140,8 @@ class ExactMatchEvaluator(BaseEvaluator):
             is_correct=is_correct,
             model_response=response_text,
             target=item.target,
-            metadata={"normalized_candidate": norm_candidate, "normalized_targets": norm_targets},
+            metadata={
+                "normalized_candidate": norm_candidate,
+                "normalized_targets": " | ".join(norm_targets),
+            },
         )

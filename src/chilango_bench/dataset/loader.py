@@ -1,5 +1,6 @@
 """Dataset loader and serializer for chilango-bench JSONL files."""
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -106,3 +107,8 @@ def save_dataset(items: list[BenchmarkItem], file_path: str | Path) -> None:
                 f.write(f"{line}\n")
     except OSError as exc:
         raise DatasetError(f"Failed to write dataset to {path}: {exc}") from exc
+
+
+def file_sha256(file_path: str | Path) -> str:
+    """Hex SHA-256 of the dataset bytes, which pins exactly what a run was graded on."""
+    return hashlib.sha256(Path(file_path).read_bytes()).hexdigest()
