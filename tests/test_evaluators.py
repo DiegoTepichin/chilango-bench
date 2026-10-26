@@ -440,3 +440,26 @@ def test_evaluation_engine_runner_call_count() -> None:
     assert len(results) == 5
     assert metrics.total_items == 5
     assert metrics.accuracy == 1.0
+
+
+@pytest.mark.parametrize(
+    ("response", "targets", "expected"),
+    [
+        ("Llama al 911 de inmediato", ["911"], True),
+        ("Es el SAT", ["sat"], True),
+        ("satisfecho", ["sat"], False),
+        ("El 2 de febrero", ["2 de febrero"], True),
+    ],
+)
+def test_exact_match_finds_short_and_numeric_answers_in_sentences(
+    response: str, targets: list[str], expected: bool
+) -> None:
+    item = BenchmarkItem(
+        id="em",
+        category=Category.PROCEDURES,
+        eval_type=EvaluationType.EXACT_MATCH,
+        prompt="?",
+        target=targets,
+    )
+
+    assert ExactMatchEvaluator().evaluate(item, response).is_correct is expected
