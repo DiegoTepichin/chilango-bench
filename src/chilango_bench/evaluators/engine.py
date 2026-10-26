@@ -1,8 +1,11 @@
 """Evaluation engine orchestrating dataset execution, scoring, and metrics."""
 
-from chilango_bench.core.exceptions import EvaluatorError
+from collections.abc import Callable
+from dataclasses import dataclass
+
+from chilango_bench.core.exceptions import EvaluatorError, RunnerError
 from chilango_bench.dataset.models import BenchmarkItem, EvaluationType
-from chilango_bench.evaluators.base import EvaluationResult
+from chilango_bench.evaluators.base import BaseEvaluator, EvaluationResult
 from chilango_bench.evaluators.deterministic import ExactMatchEvaluator, MultipleChoiceEvaluator
 from chilango_bench.evaluators.judge import RubricJudgeEvaluator
 from chilango_bench.evaluators.metrics import BenchmarkMetrics, aggregate_metrics
@@ -24,41 +27,65 @@ def format_eval_prompt(item: BenchmarkItem) -> str:
     return item.prompt
 
 
-class EvaluationEngine:
-    """Orchestrates candidate model execution and grading across benchmark items."""
+@dataclass(frozen=True)
+class GenerationSettings:
+    temperature: float = 0.0
+    max_tokens: int = 512
 
-    def __init__(self, runner: BaseRunner, judge_runner: BaseRunner | None = None) -> None:
+
+ProgressCallback = Callable[[int, int, EvaluationResult], None]
+
+
+class EvaluationEngine:
+    """Runs the candidate model on each item and grades the answer."""
+
+    def __init__(
+        self,
+        runner: BaseRunner,
+        judge_runner: BaseRunner | None = None,
+        settings: GenerationSettings | None = None,
+    ) -> None:
         self.runner = runner
+        self.settings = settings or GenerationSettings()
         self.mcq_evaluator = MultipleChoiceEvaluator()
         self.em_evaluator = ExactMatchEvaluator()
         self.judge_evaluator = RubricJudgeEvaluator(judge_runner) if judge_runner else None
 
     def evaluate_item(self, item: BenchmarkItem) -> EvaluationResult:
-        """Run candidate model and grade individual benchmark item."""
-        formatted_prompt = format_eval_prompt(item)
-
-        response = self.runner.generate(
-            prompt=formatted_prompt,
-            system_prompt=item.system_prompt,
-            temperature=0.0,
-        )
-
-        if item.eval_type == EvaluationType.MULTIPLE_CHOICE:
-            eval_res = self.mcq_evaluator.evaluate(item, response.text)
-        elif item.eval_type == EvaluationType.EXACT_MATCH:
-            eval_res = self.em_evaluator.evaluate(item, response.text)
-        elif item.eval_type == EvaluationType.RUBRIC_JUDGED:
-            if not self.judge_evaluator:
-                msg = (
-                    f"Item {item.id} requires a judge runner for rubric evaluation, "
-                    "but none was provided."
-                )
-                raise EvaluatorError(msg)
-            eval_res = self.judge_evaluator.evaluate(item, response.text)
-        else:
-            raise EvaluatorError(f"Unsupported evaluation type: {item.eval_type}")
-
-        return eval_res.model_copy(
+        """Grade one item; a runner failure becomes an errored result instead of an exception."""
+        evaluator = self._evaluator_for(item)
+        try:
+            response = self.runner.generate(
+                prompt=format_eval_prompt(item),
+                system_prompt=item.system_prompt,
+                temperature=self.settings.temperature,
+                max_tokens=self.settings.max_tokens,
+            )
+        except RunnerError as exc:
+            return EvaluationResult(
+                item_id=item.id,
+                category=item.category,
+                eval_type=item.eval_type,
+                score=0.0,
+                is_correct=False,
+                model_response="",
+                target=item.target,
+                error=f"runner failed: {exc}",
+            )
+        try:
+            graded = evaluator.evaluate(item, response.text)
+        except RunnerError as exc:
+            graded = EvaluationResult(
+                item_id=item.id,
+                category=item.category,
+                eval_type=item.eval_type,
+                score=0.0,
+                is_correct=False,
+                model_response=response.text,
+                target=item.target,
+                error=f"judge failed: {exc}",
+            )
+        return graded.model_copy(
             update={
                 "latency_seconds": response.latency_seconds,
                 "prompt_tokens": response.prompt_tokens,
@@ -67,13 +94,20 @@ class EvaluationEngine:
         )
 
     def run_benchmark(
-        self, items: list[BenchmarkItem]
+        self, items: list[BenchmarkItem], on_result: ProgressCallback | None = None
     ) -> tuple[list[EvaluationResult], BenchmarkMetrics]:
-        """Execute benchmark sequentially over items and produce summary metrics."""
         results: list[EvaluationResult] = []
-        for item in items:
-            result = self.evaluate_item(item)
-            results.append(result)
+        for index, item in enumerate(items, start=1):
+            results.append(self.evaluate_item(item))
+            if on_result is not None:
+                on_result(index, len(items), results[-1])
+        return results, aggregate_metrics(results)
 
-        metrics = aggregate_metrics(results)
-        return results, metrics
+    def _evaluator_for(self, item: BenchmarkItem) -> BaseEvaluator:
+        if item.eval_type is EvaluationType.MULTIPLE_CHOICE:
+            return self.mcq_evaluator
+        if item.eval_type is EvaluationType.EXACT_MATCH:
+            return self.em_evaluator
+        if self.judge_evaluator is None:
+            raise EvaluatorError(f"item {item.id} needs a judge model (--judge)")
+        return self.judge_evaluator

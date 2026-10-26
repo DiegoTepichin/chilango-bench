@@ -49,9 +49,14 @@ class RunReport(BaseModel):
     results: list[EvaluationResult]
 
     @property
-    def comparability_key(self) -> tuple[str, str]:
-        """Runs are comparable only on the same dataset bytes and prompt template."""
-        return self.dataset.sha256, self.settings.prompt_template
+    def comparability_key(self) -> tuple[str, int, str, str | None]:
+        """Runs are comparable only on the same dataset bytes, items, template and judge."""
+        return (
+            self.dataset.sha256,
+            self.dataset.items,
+            self.settings.prompt_template,
+            self.settings.judge_model,
+        )
 
     def save(self, path: str | Path) -> None:
         target = Path(path)

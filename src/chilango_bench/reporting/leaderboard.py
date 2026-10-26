@@ -46,7 +46,7 @@ def leaderboard_markdown(reports: list[RunReport]) -> str:
     """One ranked table per group of comparable runs (same dataset hash and prompt template)."""
     if not reports:
         return "_No benchmark runs found._\n"
-    groups: dict[tuple[str, str], list[RunReport]] = defaultdict(list)
+    groups: dict[tuple[str, int, str, str | None], list[RunReport]] = defaultdict(list)
     for report in reports:
         groups[report.comparability_key].append(report)
     ordered = sorted(groups.values(), key=lambda g: max(r.created_at for r in g), reverse=True)

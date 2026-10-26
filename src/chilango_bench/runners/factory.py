@@ -1,45 +1,27 @@
-"""Factory for instantiating model runners."""
+"""Build the runner for a provider."""
 
-from chilango_bench.core.exceptions import RunnerError
+from enum import StrEnum
+
+from chilango_bench.config import get_settings
 from chilango_bench.runners.base import BaseRunner
 from chilango_bench.runners.mock import MockRunner
 from chilango_bench.runners.openai import OpenAIRunner
 
 
-def create_runner(
-    model: str,
-    provider: str = "auto",
-    **kwargs: object,
-) -> BaseRunner:
-    """Create a configured model runner instance.
+class Provider(StrEnum):
+    MOCK = "mock"
+    """Offline runner that always answers "B"; for smoke tests."""
+    OPENAI = "openai"
+    """Any OpenAI-compatible chat completions endpoint (OpenAI, Groq, vLLM, LM Studio...)."""
+    OLLAMA = "ollama"
+    """Local Ollama through its OpenAI-compatible API; no key needed."""
 
-    Args:
-        model: Name of the model (e.g. 'mock-model', 'gpt-4o-mini', 'llama3').
-        provider: Provider identifier ('mock', 'openai', or 'auto').
-        **kwargs: Provider-specific arguments.
 
-    Returns:
-        Configured BaseRunner implementation.
-
-    Raises:
-        RunnerError: If provider is unrecognized.
-    """
-    provider_normalized = provider.strip().lower()
-    is_mock = provider_normalized == "mock" or (
-        provider_normalized == "auto" and model.startswith("mock")
-    )
-
-    if is_mock:
-        mock_resp = str(kwargs.get("default_response", "B"))
-        return MockRunner(model_name=model, default_response=mock_resp)
-
-    if provider_normalized in ("openai", "auto"):
-        api_key_val = kwargs.get("api_key")
-        api_key = str(api_key_val) if api_key_val is not None else None
-
-        base_url_val = kwargs.get("base_url")
-        base_url = str(base_url_val) if base_url_val is not None else None
-
-        return OpenAIRunner(model_name=model, api_key=api_key, base_url=base_url)
-
-    raise RunnerError(f"Unsupported model provider: '{provider}'")
+def create_runner(model: str, provider: Provider, base_url: str | None = None) -> BaseRunner:
+    if provider is Provider.MOCK:
+        return MockRunner(model_name=model)
+    if provider is Provider.OLLAMA:
+        return OpenAIRunner(
+            model, api_key="ollama", base_url=base_url or get_settings().ollama_base_url
+        )
+    return OpenAIRunner(model, base_url=base_url)

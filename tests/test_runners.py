@@ -5,7 +5,7 @@ import pytest
 import respx
 
 from chilango_bench.core.exceptions import ConfigurationError, RunnerError
-from chilango_bench.runners.factory import create_runner
+from chilango_bench.runners.factory import Provider, create_runner
 from chilango_bench.runners.mock import MockRunner
 from chilango_bench.runners.openai import OpenAIRunner
 
@@ -142,21 +142,25 @@ def test_openai_runner_local_endpoint_without_key() -> None:
     assert runner.api_key == "dummy-key-for-local-endpoint"
 
 
-def test_create_runner_factory() -> None:
-    """Ensure create_runner instantiates expected runner classes."""
-    mock_runner = create_runner(model="mock-fast", provider="mock")
-    assert isinstance(mock_runner, MockRunner)
+def test_create_runner_factory(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
 
-    auto_mock = create_runner(model="mock-model", provider="auto")
-    assert isinstance(auto_mock, MockRunner)
+    assert isinstance(create_runner("anything", Provider.MOCK), MockRunner)
+    ollama = create_runner("qwen2.5:1.5b", Provider.OLLAMA)
+    assert isinstance(ollama, OpenAIRunner)
+    assert ollama.base_url == "http://localhost:11434/v1"
+    custom = create_runner("gpt-4o-mini", Provider.OPENAI, "https://mock.api/v1")
+    assert isinstance(custom, OpenAIRunner)
+    assert custom.base_url == "https://mock.api/v1"
 
-    openai_runner = create_runner(
-        model="gpt-4o-mini", provider="openai", api_key="test-key", base_url="https://mock.api"
-    )
-    assert isinstance(openai_runner, OpenAIRunner)
 
-    with pytest.raises(RunnerError, match="Unsupported model provider"):
-        create_runner(model="test", provider="unknown_provider")
+def test_ollama_base_url_from_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OLLAMA_BASE_URL", "http://gpu-box:11434/v1")
+
+    runner = create_runner("llama3.2:3b", Provider.OLLAMA)
+
+    assert isinstance(runner, OpenAIRunner)
+    assert runner.base_url == "http://gpu-box:11434/v1"
 
 
 @respx.mock
@@ -187,13 +191,11 @@ def test_config_settings_parsing(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setenv("OPENAI_API_KEY", "sk-custom")
     monkeypatch.setenv("OPENAI_BASE_URL", "https://custom.api/v1")
-    monkeypatch.setenv("CHILANGO_LOG_LEVEL", "debug")
     monkeypatch.setenv("CHILANGO_TIMEOUT_SECONDS", "45.5")
     monkeypatch.setenv("CHILANGO_MAX_RETRIES", "5")
 
     settings = get_settings()
     assert settings.openai_api_key == "sk-custom"
     assert settings.openai_base_url == "https://custom.api/v1"
-    assert settings.log_level == "DEBUG"
     assert settings.timeout_seconds == 45.5
     assert settings.max_retries == 5

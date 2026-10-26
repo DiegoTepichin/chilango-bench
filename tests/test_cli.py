@@ -1,90 +1,104 @@
-"""Unit and integration tests for CLI interface commands."""
-
+import json
 from pathlib import Path
+
+import httpx
+import pytest
+import respx
 
 from chilango_bench.cli import main
 
-
-def test_cli_help() -> None:
-    """Ensure running CLI with no arguments returns 0 and displays help."""
-    exit_code = main([])
-    assert exit_code == 0
+SEED = "datasets/v0.1/seed.jsonl"
 
 
-def test_cli_validate_success() -> None:
-    """Ensure 'validate' command passes on the official seed dataset."""
-    exit_code = main(["validate", "datasets/v0.1/seed.jsonl"])
-    assert exit_code == 0
+def test_requires_a_command(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit):
+        main([])
+    assert "COMMAND" in capsys.readouterr().err
 
 
-def test_cli_validate_failure(tmp_path: Path) -> None:
-    """Ensure 'validate' command fails on invalid dataset file."""
-    bad_file = tmp_path / "bad.jsonl"
-    bad_file.write_text('{"bad": "data"}\n', encoding="utf-8")
-    exit_code = main(["validate", str(bad_file)])
-    assert exit_code == 1
+def test_validate_success(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["validate", SEED]) == 0
+    assert "40 valid items" in capsys.readouterr().out
 
 
-def test_cli_eval_mock_success(tmp_path: Path) -> None:
-    """Ensure 'eval' command runs against mock model and produces JSON artifact."""
-    out_file = tmp_path / "mock_eval_results.json"
-    exit_code = main(
-        [
-            "eval",
-            "-d",
-            "datasets/v0.1/seed.jsonl",
-            "-m",
-            "mock-test-model",
-            "-p",
-            "mock",
-            "-o",
-            str(out_file),
-        ]
-    )
-    assert exit_code == 0
-    assert out_file.exists()
-    assert out_file.stat().st_size > 0
+def test_validate_failure(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    bad = tmp_path / "bad.jsonl"
+    bad.write_text('{"bad": "data"}\n', encoding="utf-8")
+
+    assert main(["validate", str(bad)]) == 1
+    assert "invalid" in capsys.readouterr().err
 
 
-def test_cli_eval_missing_dataset() -> None:
-    """Ensure 'eval' command exits with 1 when dataset is not found."""
-    exit_code = main(
-        [
-            "eval",
-            "-d",
-            "nonexistent_dataset.jsonl",
-            "-m",
-            "mock-model",
-            "-p",
-            "mock",
-        ]
-    )
-    assert exit_code == 1
+def test_eval_mock_writes_a_reproducible_report(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = tmp_path / "mock.json"
+
+    assert main(["eval", "-d", SEED, "-m", "mock", "-p", "mock", "-o", str(out)]) == 0
+
+    report = json.loads(out.read_text(encoding="utf-8"))
+    assert len(report["dataset"]["sha256"]) == 64
+    assert report["settings"]["prompt_template"] == "es-v1"
+    assert report["metrics"]["overall"]["accuracy"] == 0.25
+    captured = capsys.readouterr()
+    assert "mock: 25.0% accuracy" in captured.out
+    assert "[40/40]" in captured.err
 
 
-def test_cli_leaderboard_success(tmp_path: Path) -> None:
-    """Ensure 'leaderboard' command parses directory and outputs table."""
-    # First generate a run report in the directory
-    out_file = tmp_path / "run1.json"
-    main(
-        [
-            "eval",
-            "-d",
-            "datasets/v0.1/seed.jsonl",
-            "-m",
-            "mock-model-a",
-            "-p",
-            "mock",
-            "-o",
-            str(out_file),
-        ]
-    )
+def test_eval_limit(tmp_path: Path) -> None:
+    out = tmp_path / "small.json"
 
-    exit_code = main(["leaderboard", "-r", str(tmp_path)])
-    assert exit_code == 0
+    assert main(["eval", "-d", SEED, "-m", "m", "-p", "mock", "--limit", "5", "-o", str(out)]) == 0
+    assert json.loads(out.read_text(encoding="utf-8"))["dataset"]["items"] == 5
 
 
-def test_cli_leaderboard_missing_dir() -> None:
-    """Ensure 'leaderboard' command exits with 1 on non-existent directory."""
-    exit_code = main(["leaderboard", "-r", "non_existent_results_dir"])
-    assert exit_code == 1
+@respx.mock
+def test_eval_against_ollama_records_runner_errors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("CHILANGO_MAX_RETRIES", "0")
+    calls = {"n": 0}
+
+    def reply(request: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        if calls["n"] == 2:
+            return httpx.Response(400, text="bad request")
+        return httpx.Response(200, json={"choices": [{"message": {"content": "A"}}]})
+
+    respx.post("http://localhost:11434/v1/chat/completions").mock(side_effect=reply)
+    out = tmp_path / "ollama.json"
+
+    code = main(["eval", "-d", SEED, "-m", "qwen", "-p", "ollama", "--limit", "3", "-o", str(out)])
+
+    assert code == 0
+    report = json.loads(out.read_text(encoding="utf-8"))
+    assert report["settings"]["base_url"] == "http://localhost:11434/v1"
+    assert report["metrics"]["errored_items"] == 1
+    assert report["metrics"]["graded_items"] == 2
+
+
+def test_eval_missing_dataset(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["eval", "-d", "nope.jsonl", "-m", "m", "-p", "mock"]) == 1
+    assert "error:" in capsys.readouterr().err
+
+
+def test_leaderboard(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    main(["eval", "-d", SEED, "-m", "mock-a", "-p", "mock", "-o", str(tmp_path / "a.json")])
+    capsys.readouterr()
+
+    assert main(["leaderboard", "-r", str(tmp_path)]) == 0
+    assert "`mock-a`" in capsys.readouterr().out
+
+
+def test_leaderboard_reports_invalid_files(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / "broken.json").write_text("{}", encoding="utf-8")
+
+    assert main(["leaderboard", "-r", str(tmp_path)]) == 1
+    assert "skipped:" in capsys.readouterr().err
+
+
+def test_leaderboard_missing_dir(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["leaderboard", "-r", "no_such_dir"]) == 1
+    assert "not found" in capsys.readouterr().err
