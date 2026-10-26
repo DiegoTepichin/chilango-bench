@@ -230,5 +230,5 @@ __marimo__/
 .env.*
 !.env.example
 
-# Benchmark run results
-results/
+# Scratch benchmark runs (published reports live in results/)
+runs/
