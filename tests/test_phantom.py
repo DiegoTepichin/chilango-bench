@@ -58,6 +58,25 @@ def test_classify_fabrications(response: str) -> None:
     assert classify_response(response) == "answered"
 
 
+@pytest.mark.parametrize(
+    "response",
+    [
+        "Es un término coloquial. Sin embargo, no existe una traducción directa al inglés.",
+        "Aunque no es un término ampliamente reconocido, describe a alguien muy guapo.",
+        "No es una palabra aceptada: se considera una palabra de odio.",
+    ],
+)
+def test_classify_keeps_confident_definitions_with_negations(response: str) -> None:
+    assert classify_response(response) == "answered"
+
+
+def test_classify_unclear_meaning_is_hedged() -> None:
+    response = (
+        "Es una palabra coloquial, pero no tiene un significado claro. Se refiere a una mochila."
+    )
+    assert classify_response(response) == "hedged"
+
+
 def test_classify_ignores_denials_after_the_opening() -> None:
     response = "Significa persona floja. " + "Se usa entre amigos en el barrio. " * 8 + "No conozco"
     assert classify_response(response) == "answered"

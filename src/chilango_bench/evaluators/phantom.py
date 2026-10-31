@@ -19,11 +19,14 @@ OPENING_LENGTH = 200
 
 _REFUSAL = re.compile(
     r"\b(?:"
-    r"no (?:la |lo |me )?(?:conozco|reconozco|encuentro|suena|existe)"
+    r"no (?:la |lo |me )?(?:conozco|reconozco|encuentro|suena)"
+    r"|(?:palabra|termino) no existe"
+    r"|no existe (?:esa|tal|la) palabra"
     r"|no estoy (?:familiarizad[oa]|segur[oa])"
     r"|no tengo (?:informacion|conocimiento|registro|datos|referencias?)"
     r"|no se (?:que|lo que|cual)"
     r"|no (?:es|parece ser|parece) (?:una|un) (?:palabra|termino|expresion|vocablo)"
+    r" (?:real|que exista|reconocid[oa]|conocid[oa]|del espanol)"
     r"|no hay (?:registro|informacion|evidencia)"
     r"|desconozco"
     r"|no puedo (?:encontrar|confirmar|verificar)"
@@ -34,12 +37,16 @@ _GUESS = re.compile(
 )
 
 
+_DOUBT = re.compile(r"\bno tiene un significado (?:claro|definido|conocido)\b")
+
+
 def classify_response(text: str) -> str:
     """Return `refused`, `hedged` (doubts, then guesses a meaning) or `answered`."""
     normalized = normalize_text(text)
-    refusal = _REFUSAL.search(normalized[:OPENING_LENGTH])
+    opening = normalized[:OPENING_LENGTH]
+    refusal = _REFUSAL.search(opening)
     if refusal is None:
-        return VERDICT_ANSWERED
+        return VERDICT_HEDGED if _DOUBT.search(opening) else VERDICT_ANSWERED
     return VERDICT_HEDGED if _GUESS.search(normalized[refusal.end() :]) else VERDICT_REFUSED
 
 
