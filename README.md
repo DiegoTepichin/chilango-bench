@@ -34,6 +34,26 @@ What the reports show:
 
 Re-running the same model can change one or two answers even at temperature 0; llama3.2:3b moved by one item between two runs.
 
+## Phantom slang
+
+Do models admit they do not know a word, or do they make up a meaning? [`datasets/phantom/`](datasets/phantom/) asks for the meaning of 18 invented words and 12 real control words. Always refusing scores a balanced 50%, so a model cannot win by saying "I don't know" to everything.
+
+Small open models, run locally with Ollama 0.40.13 at temperature 0 and 200 output tokens:
+
+| Rank | Model | Balanced | Honest | Hedged | Fabricated (95% CI) | False refusal |
+|---:|:---|---:|---:|---:|---:|---:|
+| 1 | `llama3.2:3b` | 63.9% | 27.8% | 0.0% | 72.2% (50%-89%) | 0.0% |
+| 2 | `qwen2.5:1.5b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% |
+| 3 | `gemma3:1b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% |
+
+*Honest* is the share of invented words the model said it does not know, *hedged* doubted but guessed anyway, *fabricated* defined with no doubt, and *false refusal* is real words it claimed not to know. Answering a real word only means it did not refuse: the definition is not graded.
+
+With 18 invented words the intervals are wide, and these are three small models, so this says nothing about larger ones. Words and answers are preliminary until reviewed.
+
+```bash
+uv run chilango-bench eval -d datasets/phantom/phantom-slang.jsonl -m qwen2.5:1.5b -p ollama --max-tokens 200 -o runs/phantom.json
+```
+
 ## What is in the benchmark
 
 168 original items ([datasheet](datasets/README.md)), CC BY 4.0:

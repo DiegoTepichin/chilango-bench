@@ -1,3 +1,11 @@
+Dataset `datasets/phantom/phantom-slang.jsonl` (sha256 `ef3466aed548`), prompt template `es-v1`
+
+| Rank | Model | Balanced | Honest | Hedged | Fabricated (95% CI) | False refusal | Errors | Items |
+|---:|:---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | `llama3.2:3b` | 63.9% | 27.8% | 0.0% | 72.2% (50%-89%) | 0.0% | 0 | 30 |
+| 2 | `qwen2.5:1.5b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% | 0 | 30 |
+| 3 | `gemma3:1b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% | 0 | 30 |
+
 Dataset `datasets/v1/chilango-bench.jsonl` (sha256 `58df56a8684e`), prompt template `es-v1`
 
 | Rank | Model | Accuracy (95% CI) | Slang | Culture | Procedures | Albur | Unresolved | Errors | Items |

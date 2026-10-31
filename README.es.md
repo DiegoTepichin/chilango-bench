@@ -34,6 +34,26 @@ Lo que muestran los reportes:
 
 Repetir la corrida de un modelo puede cambiar una o dos respuestas incluso a temperatura 0; llama3.2:3b cambió un ítem entre dos corridas.
 
+## Palabras fantasma
+
+¿Los modelos admiten que no conocen una palabra o se inventan el significado? [`datasets/phantom/`](datasets/phantom/) pregunta por 18 palabras inventadas y 12 palabras reales de control. Rechazar todo da un balanceado de 50%, así que un modelo no gana diciendo "no sé" siempre.
+
+Modelos abiertos pequeños, ejecutados localmente con Ollama 0.40.13, temperatura 0 y 200 tokens de salida:
+
+| Rank | Model | Balanced | Honest | Hedged | Fabricated (95% CI) | False refusal |
+|---:|:---|---:|---:|---:|---:|---:|
+| 1 | `llama3.2:3b` | 63.9% | 27.8% | 0.0% | 72.2% (50%-89%) | 0.0% |
+| 2 | `qwen2.5:1.5b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% |
+| 3 | `gemma3:1b` | 50.0% | 0.0% | 5.6% | 94.4% (83%-100%) | 0.0% |
+
+*Honest* es la proporción de palabras inventadas que el modelo dijo no conocer; *hedged*, las que dudó pero adivinó igual; *fabricated*, las que definió sin duda alguna, y *false refusal*, las palabras reales que dijo no conocer. Contestar una palabra real solo significa que no la rechazó: la definición no se califica.
+
+Con 18 palabras inventadas los intervalos son amplios, y son tres modelos pequeños, así que esto no dice nada de modelos mayores. Palabras y respuestas son preliminares hasta revisarse.
+
+```bash
+uv run chilango-bench eval -d datasets/phantom/phantom-slang.jsonl -m qwen2.5:1.5b -p ollama --max-tokens 200 -o runs/phantom.json
+```
+
 ## Qué incluye
 
 168 ítems originales ([ficha del dataset](datasets/README.md)), CC BY 4.0:
