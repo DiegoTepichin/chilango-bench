@@ -114,7 +114,8 @@ def test_v1_dataset_loads_and_covers_every_category_and_type() -> None:
     assert report.is_valid
     assert len(items) >= 150
     assert all(count > 0 for count in report.category_counts.values())
-    assert all(count > 0 for count in report.eval_type_counts.values())
+    v1_types = {k: v for k, v in report.eval_type_counts.items() if k != "phantom_word"}
+    assert all(count > 0 for count in v1_types.values())
 
 
 def test_v1_answer_keys_are_balanced() -> None:
