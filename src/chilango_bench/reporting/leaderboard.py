@@ -54,6 +54,8 @@ def leaderboard_markdown(reports: list[RunReport]) -> str:
 
 
 def _table(reports: list[RunReport]) -> str:
+    if all(r.metrics.phantom is not None for r in reports):
+        return _phantom_table(reports)
     first = reports[0]
     ranked = sorted(reports, key=lambda r: (r.metrics.accuracy, r.model), reverse=True)
     categories = [c for c in Category if any(c.value in r.metrics.categories for r in reports)]
@@ -76,6 +78,40 @@ def _table(reports: list[RunReport]) -> str:
             str(metrics.unresolved_items),
             str(metrics.errored_items),
             str(metrics.graded_items),
+        ]
+        lines.append("| " + " | ".join(cells) + " |")
+    return "\n".join(lines) + "\n"
+
+
+def _phantom_table(reports: list[RunReport]) -> str:
+    first = reports[0]
+    ranked = sorted(
+        (r for r in reports if r.metrics.phantom is not None),
+        key=lambda r: (r.metrics.phantom.balanced if r.metrics.phantom else 0.0, r.model),
+        reverse=True,
+    )
+    header = ["Rank", "Model", "Balanced", "Honest", "Hedged", "Fabricated (95% CI)"]
+    header += ["False refusal", "Errors", "Items"]
+    lines = [
+        f"Dataset `{first.dataset.path}` (sha256 `{first.dataset.sha256[:12]}`), "
+        f"prompt template `{first.settings.prompt_template}`",
+        "",
+        "| " + " | ".join(header) + " |",
+        "|" + "|".join(["---:", ":---", *["---:"] * (len(header) - 2)]) + "|",
+    ]
+    for rank, report in enumerate(ranked, start=1):
+        phantom = report.metrics.phantom
+        assert phantom is not None
+        cells = [
+            str(rank),
+            f"`{report.model}`",
+            f"{phantom.balanced:.1%}",
+            _score(phantom.honest),
+            _score(phantom.hedged),
+            _score(phantom.fabricated, interval=True),
+            _score(phantom.false_refusal),
+            str(report.metrics.errored_items),
+            str(report.metrics.graded_items),
         ]
         lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"

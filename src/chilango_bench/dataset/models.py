@@ -21,6 +21,14 @@ class EvaluationType(StrEnum):
     MULTIPLE_CHOICE = "multiple_choice"
     EXACT_MATCH = "exact_match"
     RUBRIC_JUDGED = "rubric_judged"
+    PHANTOM_WORD = "phantom_word"
+
+
+class WordKind(StrEnum):
+    """Whether a phantom-word item asks about an invented word or a real control."""
+
+    PHANTOM = "phantom"
+    REAL = "real"
 
 
 class ReviewStatus(StrEnum):
@@ -111,5 +119,8 @@ class BenchmarkItem(BaseModel):
                 raise ValueError(
                     "Rubric judged items must have a non-empty reference string in 'target'"
                 )
+
+        elif self.eval_type == EvaluationType.PHANTOM_WORD and self.target not in set(WordKind):
+            raise ValueError(f"Phantom word target must be one of {[k.value for k in WordKind]}")
 
         return self

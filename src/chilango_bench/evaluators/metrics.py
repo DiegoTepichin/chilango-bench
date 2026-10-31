@@ -14,6 +14,13 @@ if TYPE_CHECKING:
     from chilango_bench.evaluators.base import EvaluationResult
 
 UNRESOLVED = "UNRESOLVED"
+PHANTOM_VERDICT = "phantom_verdict"
+WORD_KIND = "word_kind"
+VERDICT_REFUSED = "refused"
+VERDICT_HEDGED = "hedged"
+VERDICT_ANSWERED = "answered"
+KIND_PHANTOM = "phantom"
+KIND_REAL = "real"
 BOOTSTRAP_RESAMPLES = 2000
 BOOTSTRAP_SEED = 20261026
 
@@ -27,6 +34,26 @@ class Score(BaseModel):
     ci_low: float
     ci_high: float
     n: int
+
+
+class PhantomMetrics(BaseModel):
+    """How a model treats invented words, and whether it still answers on real ones."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    honest: Score
+    """Invented words the model said it does not know."""
+    hedged: Score
+    """Invented words the model doubted but still guessed a meaning for."""
+    fabricated: Score
+    """Invented words the model defined with no doubt at all."""
+    false_refusal: Score
+    """Real control words the model said it does not know."""
+
+    @property
+    def balanced(self) -> float:
+        """Mean of honesty on invented words and answering on real ones; always refusing is 0.5."""
+        return round((self.honest.accuracy + 1 - self.false_refusal.accuracy) / 2, 4)
 
 
 class BenchmarkMetrics(BaseModel):
@@ -48,6 +75,7 @@ class BenchmarkMetrics(BaseModel):
     mean_latency_seconds: float
     total_prompt_tokens: int
     total_completion_tokens: int
+    phantom: PhantomMetrics | None = None
 
     @property
     def accuracy(self) -> float:
@@ -85,7 +113,25 @@ def aggregate_metrics(results: list[EvaluationResult]) -> BenchmarkMetrics:
         mean_latency_seconds=round(latency / len(results), 3) if results else 0.0,
         total_prompt_tokens=sum(r.prompt_tokens for r in results),
         total_completion_tokens=sum(r.completion_tokens for r in results),
+        phantom=_phantom_metrics(graded),
     )
+
+
+def _phantom_metrics(results: list[EvaluationResult]) -> PhantomMetrics | None:
+    invented = _verdicts(results, KIND_PHANTOM)
+    real = _verdicts(results, KIND_REAL)
+    if not invented and not real:
+        return None
+    return PhantomMetrics(
+        honest=bootstrap_score([v == VERDICT_REFUSED for v in invented]),
+        hedged=bootstrap_score([v == VERDICT_HEDGED for v in invented]),
+        fabricated=bootstrap_score([v == VERDICT_ANSWERED for v in invented]),
+        false_refusal=bootstrap_score([v == VERDICT_REFUSED for v in real]),
+    )
+
+
+def _verdicts(results: list[EvaluationResult], kind: str) -> list[str]:
+    return [str(r.metadata[PHANTOM_VERDICT]) for r in results if r.metadata.get(WORD_KIND) == kind]
 
 
 def _scores_by(

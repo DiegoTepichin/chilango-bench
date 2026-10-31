@@ -50,6 +50,10 @@ A loose letter inside a sentence never counts, because *a*, *e*, *o* and *y* are
 
 **Rubric.** The judge model receives the question, the reference answer, the criteria and the candidate answer, and must return JSON `{"score": 1-5, "justification": "..."}`. Scores map to 0–1 as `(score − 1) / 4`; 3 or more counts as correct. Output that is not valid JSON with an integer from 1 to 5 (or a `score: N` field) is recorded as a judge `error`, not as a score. The judge has not yet been validated against human grades, so rubric results are reported separately and are off by default (`--judge` enables them).
 
+**Phantom word.** `evaluators/phantom.py` reads the first 200 characters of an open answer for refusal phrases and classifies it as `refused`, `hedged` (doubts, then guesses, or says the word has no clear meaning) or `answered`. An invented word is correct only when refused; a real control word is correct unless refused. The balanced score is the mean of both rates, so always refusing scores 50 %. Whether a definition of a real word is right is not graded.
+
+These rules are deterministic but imperfect. They were corrected after reading every answer of the first run: three phrases such as *"no existe una traducción"* were wrongly read as doubt. The saved answers were regraded, not regenerated. Some cases stay debatable: an answer that calls a word "inventada" and then describes how people use it counts as `answered`, and so does one that refuses because it claims, falsely, that the word is offensive. Every answer is in the report so anyone can audit them.
+
 ## Metrics
 
 `evaluators/metrics.py`.
@@ -71,4 +75,5 @@ To reproduce a published row: check out the commit, run `chilango-bench eval` wi
 - The focus is central Mexico; other regions' slang is underrepresented.
 - Facts about procedures can change (fees, deadlines). Items avoid amounts that change yearly, but reviewers should re-check them.
 - Only small local models have been run so far.
+- Phantom words were checked against Urban Dictionary and es.wiktionary on 2026-10-30. The RAE dictionary blocked automated lookups, and a native speaker has not reviewed them yet. Words derived from real ones were discarded because a model could fairly infer them.
 - Local inference is not perfectly deterministic: re-running llama3.2:3b through Ollama at temperature 0 changed one answer out of 157.

@@ -1,0 +1,591 @@
+{
+  "report_version": 1,
+  "benchmark_version": "1.0.0",
+  "model": "qwen2.5:1.5b",
+  "created_at": "2026-10-31T03:34:36Z",
+  "dataset": {
+    "path": "datasets/phantom/phantom-slang.jsonl",
+    "sha256": "ef3466aed548d051522714109981ecbe0f009b783b171da1cc4c8cdbc452edef",
+    "items": 30
+  },
+  "settings": {
+    "provider": "ollama",
+    "base_url": "http://localhost:11434/v1",
+    "temperature": 0.0,
+    "max_tokens": 200,
+    "prompt_template": "es-v1",
+    "judge_model": null
+  },
+  "metrics": {
+    "total_items": 30,
+    "graded_items": 30,
+    "correct_items": 12,
+    "errored_items": 0,
+    "unresolved_items": 0,
+    "overall": {
+      "accuracy": 0.4,
+      "ci_low": 0.2333,
+      "ci_high": 0.5667,
+      "n": 30
+    },
+    "categories": {
+      "slang": {
+        "accuracy": 0.4,
+        "ci_low": 0.2333,
+        "ci_high": 0.5667,
+        "n": 30
+      }
+    },
+    "eval_types": {
+      "phantom_word": {
+        "accuracy": 0.4,
+        "ci_low": 0.2333,
+        "ci_high": 0.5667,
+        "n": 30
+      }
+    },
+    "average_score": 0.4,
+    "total_latency_seconds": 238.298,
+    "mean_latency_seconds": 7.943,
+    "total_prompt_tokens": 1450,
+    "total_completion_tokens": 5646,
+    "phantom": {
+      "honest": {
+        "accuracy": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0,
+        "n": 18
+      },
+      "hedged": {
+        "accuracy": 0.0556,
+        "ci_low": 0.0,
+        "ci_high": 0.1667,
+        "n": 18
+      },
+      "fabricated": {
+        "accuracy": 0.9444,
+        "ci_low": 0.8333,
+        "ci_high": 1.0,
+        "n": 18
+      },
+      "false_refusal": {
+        "accuracy": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0,
+        "n": 12
+      }
+    }
+  },
+  "results": [
+    {
+      "item_id": "phantom-001",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"chompiruleta\" es un término coloquial que se utiliza en el español de la Ciudad de México. Sin embargo, no existe una traducción directa para este término en inglés. \n\nEl significado de \"chompiruleta\" puede variar dependiendo del contexto y la región. Generalmente, se refiere a alguien que es:\n\n1. Inseguro o nervioso\n2. Sin confianza\n3. Sin experiencia\n4. Sin habilidades o talento\n\nEn algunos casos, puede referirse a alguien que está nervioso o temeroso de una situación. Es importante notar que este término es muy específico y se utiliza principalmente en la Ciudad de México y algunas regiones cercanas.\n\nEs importante mencionar que este término es considerado informal y no se utiliza en contextos formales o en contextos de trabajo.",
+      "target": "phantom",
+      "latency_seconds": 7.0784430829953635,
+      "prompt_tokens": 50,
+      "completion_tokens": 184,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-002",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"tlapanchear\" es una palabra que se utiliza en el español de la Ciudad de México, específicamente en la región de la Ciudad de México y la zona metropolitana. Esta palabra tiene un significado específico y se utiliza en ciertos contextos.\n\nEl significado exacto de \"tlapanchear\" puede variar dependiendo del contexto, pero generalmente se refiere a:\n\n1. Un acto de hacer que algo se derrita o se deshaga.\n2. Un proceso de descomposición o destrucción.\n3. Un acto de destruir o destruir algo.\n\nEn algunos casos, puede referirse a:\n\n- La destrucción de algo físico.\n- La eliminación de algo.\n- El deshacerse de algo.\n\nEs importante notar que esta palabra no es común en el español general y puede ser específica para la región de la Ciudad de México. Siempre es recomendable consultar el",
+      "target": "phantom",
+      "latency_seconds": 5.430629292008234,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-003",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"pachurrete\" es un término coloquial que se utiliza en el español de la Ciudad de México (México) para referirse a una persona que es muy rara o extraña. Esta expresión se utiliza para describir a alguien que tiene características o comportamientos que no son comunes o que pueden ser consideradas extrañas o poco convencionales.\n\nEl término \"pachurrete\" se utiliza para:\n\n1. Reflejar la rara o extraña personalidad de la persona.\n2. Indicar que la persona tiene características que no son comunes o típicas.\n3. Usar humor o ironía para describir a alguien que es muy diferente o extraño.\n\nPor ejemplo, si alguien dice que \"mi vecino es un pachurrete\", está diciendo que su vecino tiene una personalidad o comportamiento extraño o raro.",
+      "target": "phantom",
+      "latency_seconds": 6.020307208003942,
+      "prompt_tokens": 49,
+      "completion_tokens": 190,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-004",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"cuchufleto\" es un término coloquial que se utiliza en el español de la Ciudad de México (México) para referirse a una persona que es muy tímida o nerviosa. Esta expresión se utiliza para calificar a alguien que no se siente cómodo en situaciones sociales o que tiene miedo de hablar o interactuar con otras personas.\n\nEl término \"cuchufleto\" proviene del español \"cuchillo\" y \"flecha\", lo que sugiere que la persona tiene una actitud de \"cuchillo\" (tímida o nerviosa) y \"flecha\" (que se dirige hacia adelante, como si fuera una flecha). Esta expresión se utiliza comúnmente en contextos cotidianos para describir a alguien que es muy tímida o nerviosa, especialmente en entornos sociales o de trabajo.",
+      "target": "phantom",
+      "latency_seconds": 4.804992332996335,
+      "prompt_tokens": 50,
+      "completion_tokens": 193,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-005",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"ahuizoleta\" es un término específico que se utiliza en la Ciudad de México, específicamente en la región de la Coyoacán. Esta palabra se refiere a una especie de cajón o cajita de madera, comúnmente de color blanco, que se utiliza para guardar objetos pequeños o para almacenar cosas en la casa. \n\nEste término se originó en la década de 1970 y se ha utilizado principalmente en la Ciudad de México y en la región de la Coyoacán. Es una palabra que se usa para referirse a un tipo de cajón o cajita de madera, pero con un significado específico y un uso particular en la región de la Coyoacán.\n\nEs importante notar que esta palabra es un término específico y no se utiliza en el resto del español. Es una palabra que se utiliza en la Ciudad de México y en la región de la Coyoacán, específ",
+      "target": "phantom",
+      "latency_seconds": 5.517659999997704,
+      "prompt_tokens": 48,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-006",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"cholinchear\" es un término coloquial que se utiliza en el español de la Ciudad de México (México) para referirse a una persona que es muy amable, amigable o amable. Esta expresión se utiliza comúnmente para describir a una persona que es muy amable y dispuesta a ayudar a los demás, incluso cuando no se le pide nada en particular.\n\nEl término \"cholinchear\" se originó en el siglo XIX y se refiere a la acción de \"cholinchar\", que es una forma de decir \"choler\" o \"irritable\". En el contexto de la Ciudad de México, esta expresión se ha vuelto una forma coloquial de decir \"amable\" o \"muy amable\".\n\nPor ejemplo:\n- \"Ella es cholinchear con los niños, siempre está dispuesta a ayudarles.\"\n- \"Él es ch",
+      "target": "phantom",
+      "latency_seconds": 5.042849290999584,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-007",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"tacurruja\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la región de la colonia de San Ángel. Esta palabra se utiliza para referirse a una persona que es conocida por ser muy amable, amigable y amable con los demás, especialmente con los niños. \n\nLa palabra \"tacurruja\" se compone de dos partes: \"tacu\" que se refiere a la lengua de los pájaros, y \"ruj\" que se refiere a la forma de hablar de los pájaros. Juntas, estas palabras se convierten en \"tacurruja\", que se traduce como \"habla como un pájaro\".\n\nEsta expresión se utiliza para calificar a una persona que es muy amable y amigable, especialmente con los niños. Es una forma de decir que esa persona habla de manera muy",
+      "target": "phantom",
+      "latency_seconds": 5.894864208996296,
+      "prompt_tokens": 50,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-008",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"pipiruchar\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la región de la Zona Metropolitana de la Ciudad de México (ZMC). Este término se utiliza para referirse a una persona que es muy amable, amigable o amable con los demás.\n\nEl término \"pipiruchar\" se compone de las palabras \"pipi\" (que significa \"bueno\") y \"charar\" (que significa \"hablar\"). La combinación de estas palabras crea un término que se usa para describir a una persona que es muy amable y agradable.\n\nPor ejemplo:\n- \"Ella es pipiruchar\" significa que esa persona es muy amable.\n- \"Él es pipiruchar\" significa que ese persona es muy amable.\n\nEste término es especialmente utilizado en contextos cotidianos y en la comunicación informal, como en la escuela, en la familia",
+      "target": "phantom",
+      "latency_seconds": 8.21892654200201,
+      "prompt_tokens": 48,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-009",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"guayumbear\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la zona sur de la ciudad, para referirse a una persona que es conocida por ser muy amable, amigable y amigable con los demás. \n\nEsta expresión se utiliza para describir a una persona que es amable y sociable, pero no siempre está en la posición de liderazgo o de ser el centro de atención. En otras palabras, es una persona que se siente cómoda en la compañía de los demás y se siente a gusto en cualquier situación social.\n\nEs importante notar que esta expresión es un término coloquial y no está reconocido oficialmente como un término en el español mexicano. Sin embargo, es una expresión que se utiliza comúnmente entre amigos y conocidos de la Ciudad de México para referirse a una persona amable y sociable.",
+      "target": "phantom",
+      "latency_seconds": 6.352184874995146,
+      "prompt_tokens": 49,
+      "completion_tokens": 198,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-010",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"cocolinche\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la región de la Zona Metropolitana de la Ciudad de México (ZMC). Este término se utiliza para referirse a una persona que es muy amigable, amable y agradable, pero a la vez puede ser un poco tímida o nerviosa.\n\nEl término \"cocolinche\" se compone de dos partes: \"coco\" que significa \"coco\" o \"coco de palma\", y \"cínche\" que significa \"cínco\" o \"cinco\". La combinación de estas palabras crea un término que se refiere a alguien que es amable y agradable, pero a la vez puede ser un poco tímido o nervioso.\n\nEste término se utiliza principalmente en contextos cotidianos y se utiliza para describir a personas que son amables y agradables",
+      "target": "phantom",
+      "latency_seconds": 6.651534999997239,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-011",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"chaquirreta\" es un término específico que se utiliza en la Ciudad de México, específicamente en la región de la colonia de Chalco. Esta palabra se utiliza para referirse a una especie de cerveza o bebida alcohólica, pero con un sabor y aroma muy especial.\n\nAquí hay algunos puntos clave sobre la \"chaquirreta\":\n\n1. Sabor: Es conocida por su sabor dulce y cítrico, similar a la de una chaqueta de cerveza.\n\n2. Origen: Se cree que surgió como una versión modificada de la cerveza tradicional mexicana.\n\n3. Ingredientes: La chaquirreta se prepara con agua, azúcar, y una mezcla de especias y hierbas.\n\n4. Tamaño: Es más pequeña que la cerveza común, pero aún así se puede consumir en grandes cantidades.\n\n5. Comida:",
+      "target": "phantom",
+      "latency_seconds": 11.302148792005028,
+      "prompt_tokens": 48,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-012",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"ñengorrear\" es un término coloquial que se utiliza en el español de la Ciudad de México (México) para referirse a una persona que está ocupada o distraída, especialmente cuando está haciendo algo que no es necesario o que no le interesa. \n\nEste término se deriva de la palabra \"engorro\", que significa \"la actitud de estar ocupado o distraído\". La \"ñ\" se añade al final para darle un tono más coloquial o informal.\n\nPor ejemplo:\n- \"¿Qué haces tú, ñengorrear con esa conversación?\" (¿Qué estás haciendo tú, ocupándote de esa conversación?)\n- \"¡Qué ñengorrear, no me interesa nada!\" (¡Qué distraído, no me importa nada!)\n\nEs importante notar que este término es particularmente común en la Ciudad de México y en algunas regiones del país,",
+      "target": "phantom",
+      "latency_seconds": 11.43669874999614,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-013",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"tilicuachar\" en español de la Ciudad de México se refiere a una especie de pájaro llamado \"tucan\" o \"tucán\". Es un ave que es común en la región de la Ciudad de México y en muchos otros lugares de México. Los tucanes son conocidos por su colorido plumaje y su capacidad para volar muy rápido.",
+      "target": "phantom",
+      "latency_seconds": 4.138880042009987,
+      "prompt_tokens": 50,
+      "completion_tokens": 85,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-014",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"zumpirolo\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la zona sur del país. Este término no tiene un significado oficial en el diccionario oficial de la lengua española, pero se utiliza comúnmente para referirse a una persona que es conocida por ser muy rara, extraña o distinta.\n\nAlgunas características de \"zumpirolo\" podrían ser:\n\n1. Puede referirse a una persona que es muy diferente de las normas sociales o culturales.\n2. Puede ser utilizada para describir a alguien que es muy peculiar o extraña.\n3. Puede ser una forma de jerga o lenguaje coloquial que se utiliza en la Ciudad de México.\n\nEs importante notar que este término no tiene un significado universal y puede variar dependiendo del contexto en el que se use.",
+      "target": "phantom",
+      "latency_seconds": 8.588293749999139,
+      "prompt_tokens": 49,
+      "completion_tokens": 195,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-015",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"chumbilongo\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la zona sur de la capital, para referirse a una persona que es conocida por ser muy amable, amigable y amigable con los demás. Esta expresión se utiliza para calificar a una persona que es considerada muy amable y sociable, pero no siempre está relacionada con la amistad real o con la amistad verdadera.",
+      "target": "phantom",
+      "latency_seconds": 3.7738585409970256,
+      "prompt_tokens": 49,
+      "completion_tokens": 105,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-016",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"ximbombear\" es un término coloquial que se utiliza en la Ciudad de México, específicamente en la región de la Zona Metropolitana de la Ciudad de México (ZMC). Este término se utiliza para describir una serie de acciones o comportamientos que se consideran inapropiados o poco respetuosos.\n\nAquí hay una explicación más detallada:\n\n1. Significado: La palabra se utiliza para referirse a una serie de acciones o comportamientos que se consideran inapropiados o poco respetuosos.\n\n2. Contexto: Se utiliza principalmente en contextos sociales o profesionales, donde se busca expresar desacuerdo o reproche.\n\n3. Uso: Se puede aplicar a cualquier situación en la que se considere que alguien está actuando de manera inapropiada o poco respetuosa.\n\n4. Variante: La palabra se puede encontrar con una",
+      "target": "phantom",
+      "latency_seconds": 7.739574082996114,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-017",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"chilindrango\" es un término coloquial que se utiliza en la Ciudad de México para referirse a una persona que está muy cerca de ti, pero no está presente físicamente. Es decir, es alguien que está cerca de ti, pero no está en la misma habitación o lugar que tú. \n\nEste término se utiliza comúnmente para describir a una persona que está cerca de ti, pero no está presente en la misma habitación o lugar que tú. Por ejemplo, si estás en tu habitación y ves a tu amigo en la sala de estar, podrías decir \"¡Hola, chilindrango!\" para referirte a él.\n\nEs importante notar que este término es un uso coloquial y no está reconocido oficialmente como un término de la lengua española.",
+      "target": "phantom",
+      "latency_seconds": 6.168349333995138,
+      "prompt_tokens": 49,
+      "completion_tokens": 172,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-018",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 0.0,
+      "is_correct": false,
+      "model_response": "La palabra \"mochilongo\" es un término coloquial que se utiliza en la Ciudad de México y algunas regiones del país. Sin embargo, no tiene un significado claro o estático en el idioma español. \n\nEl término \"mochilongo\" se utiliza para referirse a:\n\n1. Un tipo de mochila o bolsa portátil.\n2. Un tipo de mochila de gran tamaño o peso.\n3. Un tipo de mochila que se usa para transportar objetos pesados o grandes.\n\nEn la Ciudad de México, este término se utiliza comúnmente para referirse a:\n\n1. Un tipo de mochila de gran tamaño o peso.\n2. Un tipo de mochila que se usa para transportar objetos pesados o grandes.\n\nEs importante notar que este término no está en uso generalizado en español y puede variar en su significado según el contexto. Por lo general, se utiliza en context",
+      "target": "phantom",
+      "latency_seconds": 8.533475791991805,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "hedged",
+        "word_kind": "phantom"
+      }
+    },
+    {
+      "item_id": "phantom-019",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"chamba\" en español de la Ciudad de México tiene varias connotaciones dependiendo del contexto:\n\n1. En sentido figurado: \"Chamba\" se utiliza para referirse a una habitación o apartamento en una casa o apartamento. Es una forma coloquial de decir \"habitación\" o \"habitación propia\".\n\n2. En sentido técnico: En ciertos contextos, como en la música, \"chamba\" puede referirse a una canción o estilo musical específico.\n\n3. En sentido coloquial: En la Ciudad de México, \"chamba\" se usa para referirse a una persona o grupo de personas que son conocidos por su estilo de vida, su comportamiento o su estilo de vida en general. Es una forma de decir \"chicos\" o \"chicos de la escuela\".\n\n4. En sentido informal: \"Chamba\" se usa para referirse a una persona o grupo de personas que son conoc",
+      "target": "real",
+      "latency_seconds": 10.961980332998792,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-020",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"chido\" en español de la Ciudad de México tiene varias interpretaciones dependiendo del contexto:\n\n1. En el sentido más común, \"chido\" se usa para referirse a alguien que es muy inteligente o astuto. Es una forma informal de decir \"genial\" o \"excelente\".\n\n2. En el contexto de la Ciudad de México, \"chido\" puede ser un acrónimo o sigla. Por ejemplo, \"Chido\" podría ser la abreviatura de \"Chapultepec\", el nombre del parque nacional más grande de la Ciudad de México.\n\n3. También puede ser una forma de decir \"chido\" o \"chido\" en un sentido más informal o coloquial, similar a cómo se usa en otras partes del país.\n\n4. En algunos casos, \"chido\" puede ser una forma de decir \"chido\" o \"chido\" en un sentido más informal o coloqu",
+      "target": "real",
+      "latency_seconds": 10.604600042002858,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-021",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"neta\" en español de la Ciudad de México tiene varias connotaciones dependiendo del contexto:\n\n1. En sentido figurado:\n   - \"Neta\" se usa para describir algo que es claro, visible o fácil de entender. Por ejemplo: \"La explicación es neta, todos entendieron bien\".\n\n2. En sentido técnico:\n   - En ciencias y tecnología, \"neta\" se utiliza para referirse a una solución o método que es fácil de implementar y entender.\n\n3. En sentido figurado:\n   - \"Neta\" también se usa para describir algo que es simple o básico, como en \"La receta es neta, solo necesitas los ingredientes básicos\".\n\n4. En sentido figurado:\n   - En ciertos contextos, \"neta\" puede referirse a algo que es directo o simple, como en \"La conversación es neta, no hay mucho de lo que no se ent",
+      "target": "real",
+      "latency_seconds": 9.287341500006733,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-022",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"güey\" es un término coloquial que se utiliza en el español de la Ciudad de México (México) para referirse a una persona que está muy nerviosa o nerviosa. Es una forma informal y un poco vulgar de decir \"está nerviosa\" o \"está nerviosa\".\n\nEste término se utiliza comúnmente en contextos cotidianos para describir a una persona que está muy ansiosa o preocupada. Es una forma de expresar la emoción o la ansiedad de una persona de una manera más directa y menos formal que la palabra \"está nerviosa\".\n\nEs importante notar que esta palabra es considerada vulgar y no se utiliza en contextos formales o en lugares donde se requiere un tono más respetuoso.",
+      "target": "real",
+      "latency_seconds": 8.573098541994113,
+      "prompt_tokens": 47,
+      "completion_tokens": 166,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-023",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"naco\" es un término coloquial que se utiliza en el español de la Ciudad de México para referirse a alguien que es muy chico o pequeño. Es una forma informal y un poco vulgar de decir \"chico\" o \"chiquito\". \n\nPor ejemplo:\n- \"¿Qué tal, naco?\" (¿Cómo estás, chico?)\n- \"¿Qué te parece si vamos a comer?\" (¿Qué te parece si vamos a comer?)\n- \"¿Qué te parece si te quedas un rato más?\" (¿Qué te parece si te quedas un rato más?)\n\nEs importante notar que este término es considerado vulgar y no se utiliza en contextos formales o en la comunicación con personas mayores.",
+      "target": "real",
+      "latency_seconds": 7.462195749991224,
+      "prompt_tokens": 47,
+      "completion_tokens": 158,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-024",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"chafa\" en español de la Ciudad de México tiene varias significados dependiendo del contexto:\n\n1. En el sentido coloquial:\n   - \"Chafa\" se usa para referirse a una persona que es muy amable, amigable o amable con los demás.\n\n2. En el sentido técnico:\n   - \"Chafa\" se utiliza para describir a una persona que es muy amable, amigable o amable con los demás.\n\n3. En el sentido popular:\n   - \"Chafa\" se usa para referirse a una persona que es muy amable, amigable o amable con los demás.\n\n4. En el sentido técnico:\n   - \"Chafa\" se utiliza para describir a una persona que es muy amable, amigable o amable con los demás.\n\n5. En el sentido coloquial:\n   - \"Chafa\" se usa para referirse a una persona que es muy",
+      "target": "real",
+      "latency_seconds": 9.062343083001906,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-025",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"chela\" en español de la Ciudad de México tiene varias significados dependiendo del contexto:\n\n1. En el contexto de la gastronomía mexicana:\n   - \"Chela\" se refiere a una especie de tortilla de maíz, también conocida como \"tortilla de maíz\" o \"tortilla de chilaquiles\".\n   - Se prepara con harina de maíz, agua y sal, y se cocina en una sartén o en una sartén de barro.\n\n2. En el contexto de la música:\n   - \"Chela\" puede referirse a una canción o estribillo específico de una banda o grupo musical.\n\n3. En el contexto de la tecnología:\n   - \"Chela\" puede ser una referencia a un dispositivo móvil o un teléfono inteligente.\n\n4. En el contexto de la política:\n   - \"Chela\" puede referirse a un partido político o",
+      "target": "real",
+      "latency_seconds": 8.315651750002871,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-026",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"cuate\" en español de la Ciudad de México tiene varias significados dependiendo del contexto:\n\n1. En el contexto de la gastronomía mexicana:\n   - \"Cuate\" se refiere a una especie de pescado que se encuentra en el río de la Ciudad de México. Es conocido por su sabor fuerte y su color verde oscuro.\n\n2. En el contexto de la música:\n   - \"Cuate\" puede referirse a una canción o estribillo específico de la música tradicional mexicana.\n\n3. En el contexto de la literatura:\n   - \"Cuate\" puede ser un nombre propio o un elemento de un personaje ficticio en una obra literaria.\n\n4. En el contexto de la geografía:\n   - \"Cuate\" puede referirse a un lugar específico en la Ciudad de México, como una calle o un barrio.\n\n5. En el contexto de la tecnología:\n   - \"",
+      "target": "real",
+      "latency_seconds": 9.265543457993772,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-027",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"escuincle\" en español de la Ciudad de México tiene varias connotaciones dependiendo del contexto:\n\n1. En el sentido más literal: Un pequeño pájaro de la familia del perro, conocido también como escuinculo.\n\n2. En el sentido figurado:\n   - Un niño pequeño o pequeño en edad.\n   - Un niño que está aprendiendo a caminar o andar.\n   - Un niño que está aprendiendo a hablar o comunicarse.\n\n3. En el sentido de \"escuincle\" en el sentido figurado:\n   - Un niño que está aprendiendo a ser independiente o autónomo.\n   - Un niño que está aprendiendo a manejar sus emociones o emociones.\n\n4. En el sentido de \"escuincle\" en el sentido figurado:\n   - Un niño que está aprendiendo a ser responsable o a tomar decisiones por sí mismo.\n\n5. En el sentido de \"esc",
+      "target": "real",
+      "latency_seconds": 11.553999374998966,
+      "prompt_tokens": 49,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-028",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"gacho\" en español de la Ciudad de México tiene varias connotaciones:\n\n1. Es un término informal y vulgar que se usa para referirse a una persona que es considerada \"mala\" o \"maltratada\".\n\n2. Se utiliza para describir a una persona que está \"gachada\" o \"gachada de la mala\" (maltratada).\n\n3. Se puede usar para referirse a una persona que está \"gachada\" o \"gachada de la mala\" (maltratada).\n\n4. Es un término que se utiliza para calificar a una persona que está \"gachada\" o \"gachada de la mala\" (maltratada).\n\n5. Se utiliza para describir a una persona que está \"gachada\" o \"gachada de la mala\" (maltratada).\n\n6. Se puede usar para referirse a una persona que",
+      "target": "real",
+      "latency_seconds": 9.706565708009293,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-029",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"mordida\" en español de la Ciudad de México tiene varias implicaciones dependiendo del contexto:\n\n1. En el contexto de la gastronomía:\n   - \"Mordida\" se refiere a una mordida o bocado en la comida.\n\n2. En el contexto de la música:\n   - \"Mordida\" puede referirse a una mordida en la guitarra, especialmente en la técnica de la guitarra acústica.\n\n3. En el contexto de la medicina:\n   - \"Mordida\" puede referirse a una mordedura de serpiente o insecto.\n\n4. En el contexto de la literatura:\n   - \"Mordida\" puede ser un personaje o un elemento importante en la narrativa.\n\n5. En el contexto de la ciencia:\n   - \"Mordida\" puede referirse a la mordida de un rayo o la mordida de un rayo",
+      "target": "real",
+      "latency_seconds": 10.29408725000394,
+      "prompt_tokens": 48,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    },
+    {
+      "item_id": "phantom-030",
+      "category": "slang",
+      "eval_type": "phantom_word",
+      "score": 1.0,
+      "is_correct": true,
+      "model_response": "La palabra \"aguas\" en español de la Ciudad de México tiene varias significados dependiendo del contexto:\n\n1. En el sentido más común, \"aguas\" se refiere a las aguas del río Texcoco, que se encuentra en la Ciudad de México. Este río es una importante fuente de agua para la ciudad y sus alrededores.\n\n2. En el sentido figurado, \"aguas\" puede referirse a las circunstancias o la situación de la Ciudad de México. Por ejemplo, \"las aguas de la Ciudad de México\" pueden significar la vida, la prosperidad o la situación general de la ciudad.\n\n3. En algunos contextos, \"aguas\" puede referirse a las aguas del río Texcoco, pero también puede ser un juego de palabras con \"agua\", como en \"las aguas de la ciudad\".\n\n4. En algunos dialectos de español, \"aguas\"",
+      "target": "real",
+      "latency_seconds": 10.517359333010972,
+      "prompt_tokens": 47,
+      "completion_tokens": 200,
+      "error": null,
+      "metadata": {
+        "phantom_verdict": "answered",
+        "word_kind": "real"
+      }
+    }
+  ]
+}

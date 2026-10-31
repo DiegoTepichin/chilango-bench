@@ -33,6 +33,12 @@ A benchmark someone else can run, reproduce and trust:
 | Leaderboard | Markdown table with CIs, generated from committed reports in `results/`. |
 | Docs | `docs/METHODOLOGY.md`, README with real results. |
 
+## Scope after v1.0
+
+| Area | Added |
+|---|---|
+| Phantom slang | `datasets/phantom/phantom-slang.jsonl`, `phantom_word` evaluator, fabrication metrics and leaderboard table. |
+
 ## Out of scope
 
 Web leaderboard, automated third-party submissions, other dialects, fine-tuning, audio.

@@ -2,6 +2,13 @@
 
 All notable changes are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Phantom slang dataset: 18 invented words and 12 real controls, with a `phantom_word` evaluator, fabrication metrics and a leaderboard table.
+- Results for `llama3.2:3b`, `qwen2.5:1.5b` and `gemma3:1b` on phantom slang.
+
 ## [1.0.0] - 2026-10-26
 
 ### Added
