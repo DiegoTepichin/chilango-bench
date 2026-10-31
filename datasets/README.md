@@ -2,6 +2,8 @@
 
 `v1/chilango-bench.jsonl` holds 168 items written for this benchmark. They are original text, not copied from other benchmarks, websites or exams.
 
+`phantom/phantom-slang.jsonl` holds 18 invented words and 12 real control words, also original and unreviewed. It is a separate file so the v1 hash and results stay comparable. See [the methodology](../docs/METHODOLOGY.md).
+
 ## Licence
 
 The dataset is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). The code in this repository is MIT.
