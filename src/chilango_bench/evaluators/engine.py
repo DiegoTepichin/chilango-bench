@@ -9,6 +9,7 @@ from chilango_bench.evaluators.base import BaseEvaluator, EvaluationResult
 from chilango_bench.evaluators.deterministic import ExactMatchEvaluator, MultipleChoiceEvaluator
 from chilango_bench.evaluators.judge import RubricJudgeEvaluator
 from chilango_bench.evaluators.metrics import BenchmarkMetrics, aggregate_metrics
+from chilango_bench.evaluators.phantom import PhantomWordEvaluator
 from chilango_bench.runners.base import BaseRunner
 
 PROMPT_TEMPLATE = "es-v1"
@@ -49,6 +50,7 @@ class EvaluationEngine:
         self.settings = settings or GenerationSettings()
         self.mcq_evaluator = MultipleChoiceEvaluator()
         self.em_evaluator = ExactMatchEvaluator()
+        self.phantom_evaluator = PhantomWordEvaluator()
         self.judge_evaluator = RubricJudgeEvaluator(judge_runner) if judge_runner else None
 
     def evaluate_item(self, item: BenchmarkItem) -> EvaluationResult:
@@ -108,6 +110,8 @@ class EvaluationEngine:
             return self.mcq_evaluator
         if item.eval_type is EvaluationType.EXACT_MATCH:
             return self.em_evaluator
+        if item.eval_type is EvaluationType.PHANTOM_WORD:
+            return self.phantom_evaluator
         if self.judge_evaluator is None:
             raise EvaluatorError(f"item {item.id} needs a judge model (--judge)")
         return self.judge_evaluator
