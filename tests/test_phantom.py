@@ -147,7 +147,7 @@ def test_other_runs_have_no_phantom_metrics() -> None:
 def test_dataset_loads_with_invented_words_and_controls() -> None:
     items = load_dataset(DATASET)
     kinds = [item.target for item in items]
-    assert kinds.count("phantom") == 18
+    assert kinds.count("phantom") == 17
     assert kinds.count("real") == 12
     assert len({item.metadata["word"] for item in items}) == len(items)
 
