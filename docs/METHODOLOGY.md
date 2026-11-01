@@ -75,5 +75,5 @@ To reproduce a published row: check out the commit, run `chilango-bench eval` wi
 - The focus is central Mexico; other regions' slang is underrepresented.
 - Facts about procedures can change (fees, deadlines). Items avoid amounts that change yearly, but reviewers should re-check them.
 - Only small local models have been run so far.
-- Phantom words were checked against Urban Dictionary and es.wiktionary on 2026-10-30. The RAE dictionary blocked automated lookups, and a native speaker has not reviewed them yet. Words derived from real ones were discarded because a model could fairly infer them.
+- Phantom words were checked against Urban Dictionary and es.wiktionary on 2026-10-30. The RAE dictionary blocked automated lookups, and a native speaker has not reviewed them yet. Words derived from real ones were discarded because a model could fairly infer them. *Cuchufleto* was removed after publication because *cuchufleta* is a real word; the reports were recomputed without it.
 - Local inference is not perfectly deterministic: re-running llama3.2:3b through Ollama at temperature 0 changed one answer out of 157.
