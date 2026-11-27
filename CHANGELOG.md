@@ -2,12 +2,19 @@
 
 All notable changes are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - Unreleased
 
 ### Added
 
 - Phantom slang dataset: 17 invented words and 12 real controls, with a `phantom_word` evaluator, fabrication metrics and a leaderboard table.
 - Results for `llama3.2:3b`, `qwen2.5:1.5b` and `gemma3:1b` on phantom slang.
+
+### Fixed
+
+- A run in which no item could be graded (for example, with the model server down) now fails and writes no report. It used to exit successfully with a report showing 0 % accuracy.
+- A malformed API response is recorded as that item's error instead of ending the run and losing the other results.
+- `--limit` must be positive, an empty item selection is an error, and an unwritable report path fails before any model call.
+- Files that are not UTF-8 and broken dataset lines are reported without a traceback. Ctrl+C during `review` keeps earlier decisions, and the dataset is rewritten in one step.
 
 ## [1.0.0] - 2026-10-26
 
@@ -42,5 +49,6 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 Initial harness and 40-item seed set.
 
+[1.1.0]: https://github.com/DiegoTepichin/chilango-bench/compare/v1.0.0...main
 [1.0.0]: https://github.com/DiegoTepichin/chilango-bench/releases/tag/v1.0.0
 [0.1.0]: https://github.com/DiegoTepichin/chilango-bench/commits/main

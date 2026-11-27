@@ -1,6 +1,6 @@
 [project]
 name = "chilango-bench"
-version = "1.0.0"
+version = "1.1.0"
 description = "A benchmark of large language models on Mexican Spanish nuances, slang, cultural context, and wordplay"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,6 +12,11 @@ dependencies = [
     "pydantic>=2.7.0",
     "httpx>=0.27.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/DiegoTepichin/chilango-bench"
+Repository = "https://github.com/DiegoTepichin/chilango-bench"
+Issues = "https://github.com/DiegoTepichin/chilango-bench/issues"
 
 [project.scripts]
 chilango-bench = "chilango_bench.cli:main"

@@ -78,6 +78,8 @@ def load_dataset(file_path: str | Path) -> list[BenchmarkItem]:
                 seen_ids[item.id] = line_no
                 items.append(item)
 
+    except UnicodeDecodeError as exc:
+        raise DatasetError(f"Dataset file is not UTF-8 text: {path}") from exc
     except OSError as exc:
         raise DatasetError(f"Failed to read dataset file {path}: {exc}") from exc
 
