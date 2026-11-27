@@ -68,7 +68,7 @@ class RunReport(BaseModel):
         source = Path(path)
         try:
             return cls.model_validate_json(source.read_text(encoding="utf-8"))
-        except OSError as exc:
+        except (OSError, UnicodeDecodeError) as exc:
             raise ReportError(f"cannot read report {source}: {exc}") from exc
         except ValidationError as exc:
             first = exc.errors()[0]

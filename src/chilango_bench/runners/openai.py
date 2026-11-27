@@ -1,7 +1,6 @@
 """Runner for OpenAI-compatible chat completion APIs."""
 
 import time
-from typing import Any
 
 import httpx
 
@@ -92,35 +91,7 @@ class OpenAIRunner(BaseRunner):
                     )
 
                 response.raise_for_status()
-                data: dict[str, Any] = response.json()
-
-                choices = data.get("choices", [])
-                if not choices or not isinstance(choices, list):
-                    raise RunnerError(f"Unexpected response format, missing choices: {data}")
-
-                first_choice = choices[0]
-                message_obj = first_choice.get("message", {})
-                content = message_obj.get("content", "")
-
-                usage = data.get("usage", {})
-                prompt_tokens = usage.get("prompt_tokens", 0) if isinstance(usage, dict) else 0
-                completion_tokens = (
-                    usage.get("completion_tokens", 0) if isinstance(usage, dict) else 0
-                )
-
-                raw_resp: dict[str, object] = {
-                    "id": str(data.get("id", "")),
-                    "model": str(data.get("model", self.model_name)),
-                }
-
-                return RunnerResponse(
-                    text=content or "",
-                    prompt_tokens=int(prompt_tokens),
-                    completion_tokens=int(completion_tokens),
-                    latency_seconds=elapsed,
-                    model_name=self.model_name,
-                    raw_response=raw_resp,
-                )
+                return self._parse(response, elapsed)
 
             except httpx.TimeoutException as exc:
                 last_error = exc
@@ -144,3 +115,30 @@ class OpenAIRunner(BaseRunner):
                 raise RunnerError(f"Network transport error: {exc}") from exc
 
         raise RunnerError(f"Failed after {self.max_retries} retries: {last_error}")
+
+    def _parse(self, response: httpx.Response, elapsed: float) -> RunnerResponse:
+        try:
+            data = response.json()
+            message = data["choices"][0]["message"]
+            content = message.get("content")
+            if content is not None and not isinstance(content, str):
+                raise TypeError("content is not text")
+        except (AttributeError, IndexError, KeyError, TypeError, ValueError) as exc:
+            raise RunnerError(f"Unexpected response format: {response.text[:200]}") from exc
+        usage = data.get("usage")
+        usage = usage if isinstance(usage, dict) else {}
+        return RunnerResponse(
+            text=content or "",
+            prompt_tokens=_token_count(usage.get("prompt_tokens")),
+            completion_tokens=_token_count(usage.get("completion_tokens")),
+            latency_seconds=elapsed,
+            model_name=self.model_name,
+            raw_response={
+                "id": str(data.get("id", "")),
+                "model": str(data.get("model", self.model_name)),
+            },
+        )
+
+
+def _token_count(value: object) -> int:
+    return value if isinstance(value, int) else 0

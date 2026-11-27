@@ -9,14 +9,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from chilango_bench import __version__
-from chilango_bench.core.exceptions import ChilangoBenchError
+from chilango_bench.core.exceptions import ChilangoBenchError, DatasetError
 from chilango_bench.dataset.loader import file_sha256, load_dataset
 from chilango_bench.dataset.models import EvaluationType, ReviewStatus
 from chilango_bench.dataset.review import review_dataset
 from chilango_bench.dataset.validator import validate_dataset_file
 from chilango_bench.evaluators.engine import PROMPT_TEMPLATE, EvaluationEngine, GenerationSettings
 from chilango_bench.reporting.leaderboard import leaderboard_markdown, load_reports
-from chilango_bench.reporting.models import DatasetInfo, RunReport, RunSettings
+from chilango_bench.reporting.models import DatasetInfo, ReportError, RunReport, RunSettings
 from chilango_bench.runners.factory import Provider, create_runner
 
 if TYPE_CHECKING:
@@ -51,7 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("-j", "--judge", help="judge model for rubric items (same provider)")
     run.add_argument("--temperature", type=float, default=0.0)
     run.add_argument("--max-tokens", type=int, default=512)
-    run.add_argument("--limit", type=int, help="evaluate only the first N items (smoke test)")
+    run.add_argument(
+        "--limit", type=_positive_int, help="evaluate only the first N items (smoke test)"
+    )
     run.add_argument("-o", "--output", type=Path, help="write the JSON run report here")
 
     run.add_argument(
@@ -65,6 +67,12 @@ def build_parser() -> argparse.ArgumentParser:
     board = commands.add_parser("leaderboard", help="Markdown leaderboard from run reports")
     board.add_argument("-r", "--results-dir", type=Path, default=Path("results"))
     return parser
+
+
+def _positive_int(text: str) -> int:
+    if not text.isdecimal() or int(text) < 1:
+        raise argparse.ArgumentTypeError(f"must be a positive whole number, got {text!r}")
+    return int(text)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -115,12 +123,19 @@ def run_eval(args: argparse.Namespace) -> int:
         limit=args.limit,
         accepted_only=args.accepted_only,
     )
+    if not items:
+        raise DatasetError("no items to evaluate with these options")
+    if args.output:
+        _prepare_output(args.output)
     runner = create_runner(args.model, provider, args.base_url)
     judge = create_runner(args.judge, provider, args.base_url) if args.judge else None
     settings = GenerationSettings(temperature=args.temperature, max_tokens=args.max_tokens)
     engine = EvaluationEngine(runner, judge, settings)
     print(f"{args.model} ({provider.value}) on {len(items)} items", file=sys.stderr)
     results, metrics = engine.run_benchmark(items, _print_progress)
+    if metrics.graded_items == 0:
+        print(f"error: no item could be graded; first {results[0].error}", file=sys.stderr)
+        return EXIT_FAILURE
     print(_summary(args.model, metrics))
     if args.output:
         report = RunReport(
@@ -144,6 +159,16 @@ def run_eval(args: argparse.Namespace) -> int:
         report.save(args.output)
         print(f"wrote {args.output}", file=sys.stderr)
     return EXIT_OK
+
+
+def _prepare_output(path: Path) -> None:
+    """Fail before spending model calls on a report that could not be saved."""
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise ReportError(f"cannot write the report to {path}: {exc}") from exc
+    if path.is_dir():
+        raise ReportError(f"cannot write the report to {path}: it is a directory")
 
 
 def run_leaderboard(results_dir: Path) -> int:
