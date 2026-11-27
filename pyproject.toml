@@ -13,6 +13,11 @@ dependencies = [
     "httpx>=0.27.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/DiegoTepichin/chilango-bench"
+Repository = "https://github.com/DiegoTepichin/chilango-bench"
+Issues = "https://github.com/DiegoTepichin/chilango-bench/issues"
+
 [project.scripts]
 chilango-bench = "chilango_bench.cli:main"
 
