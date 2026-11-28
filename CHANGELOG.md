@@ -2,7 +2,7 @@
 
 All notable changes are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] - Unreleased
+## [1.1.0] - 2026-11-27
 
 ### Added
 
@@ -49,6 +49,6 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 Initial harness and 40-item seed set.
 
-[1.1.0]: https://github.com/DiegoTepichin/chilango-bench/compare/v1.0.0...main
+[1.1.0]: https://github.com/DiegoTepichin/chilango-bench/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/DiegoTepichin/chilango-bench/releases/tag/v1.0.0
 [0.1.0]: https://github.com/DiegoTepichin/chilango-bench/commits/main

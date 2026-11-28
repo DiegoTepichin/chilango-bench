@@ -8,7 +8,7 @@
 
 [Read in English](README.md)
 
-> **Estado:** v1.0. Los 168 ítems del dataset **todavía no han sido revisados** por una persona hablante nativa, así que los puntajes de abajo son preliminares. La revisión viene integrada: `chilango-bench review`.
+> **Estado:** v1.1.0. Los 168 ítems del dataset **todavía no han sido revisados** por una persona hablante nativa, así que los puntajes de abajo son preliminares. La revisión viene integrada: `chilango-bench review`.
 
 ## Por qué
 

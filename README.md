@@ -3,12 +3,12 @@
 **Does your LLM actually understand Mexican Spanish?** A reproducible benchmark of slang, Mexico City culture, government procedures and *albur*, with an open dataset and a harness that runs against local and API models.
 
 [![CI](https://github.com/DiegoTepichin/chilango-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/DiegoTepichin/chilango-bench/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
-[![Dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC%20BY%204.0-green.svg)](datasets/README.md)
+[![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](https://github.com/DiegoTepichin/chilango-bench/blob/main/LICENSE)
+[![Dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC%20BY%204.0-green.svg)](https://github.com/DiegoTepichin/chilango-bench/blob/main/datasets/README.md)
 
-[Leer en español](README.es.md)
+[Leer en español](https://github.com/DiegoTepichin/chilango-bench/blob/main/README.es.md)
 
-> **Status:** v1.0. The 168 dataset items have **not yet been reviewed** by a native speaker, so the scores below are preliminary. Review is built in: `chilango-bench review`.
+> **Status:** v1.1.0. The 168 dataset items have **not yet been reviewed** by a native speaker, so the scores below are preliminary. Review is built in: `chilango-bench review`.
 
 ## Why
 
@@ -16,7 +16,7 @@ Spanish benchmarks are usually translations from English or neutral Spanish. The
 
 ## Results
 
-Small open models, run locally with Ollama 0.40.6 at temperature 0 on the 157 automatically graded items (rubric items need a judge model and are not included). Every row comes from a committed report in [`results/`](results/).
+Small open models, run locally with Ollama 0.40.6 at temperature 0 on the 157 automatically graded items (rubric items need a judge model and are not included). Every row comes from a committed report in [`results/`](https://github.com/DiegoTepichin/chilango-bench/tree/main/results/).
 
 | Rank | Model | Accuracy (95% CI) | Slang | Culture | Procedures | Albur | Unresolved | Items |
 |---:|:---|---:|---:|---:|---:|---:|---:|---:|
@@ -36,7 +36,7 @@ Re-running the same model can change one or two answers even at temperature 0; l
 
 ## Phantom slang
 
-Do models admit they do not know a word, or do they make up a meaning? [`datasets/phantom/`](datasets/phantom/) asks for the meaning of 17 invented words and 12 real control words. Always refusing scores a balanced 50%, so a model cannot win by saying "I don't know" to everything.
+Do models admit they do not know a word, or do they make up a meaning? [`datasets/phantom/`](https://github.com/DiegoTepichin/chilango-bench/tree/main/datasets/phantom/) asks for the meaning of 17 invented words and 12 real control words. Always refusing scores a balanced 50%, so a model cannot win by saying "I don't know" to everything.
 
 Small open models, run locally with Ollama 0.40.13 at temperature 0 and 200 output tokens:
 
@@ -56,7 +56,7 @@ uv run chilango-bench eval -d datasets/phantom/phantom-slang.jsonl -m qwen2.5:1.
 
 ## What is in the benchmark
 
-168 original items ([datasheet](datasets/README.md)), CC BY 4.0:
+168 original items ([datasheet](https://github.com/DiegoTepichin/chilango-bench/blob/main/datasets/README.md)), CC BY 4.0:
 
 | Category | Items | Examples of what is tested |
 |---|---|---|
@@ -74,7 +74,7 @@ uv run chilango-bench eval -d datasets/phantom/phantom-slang.jsonl -m qwen2.5:1.
 - **Rubric:** an LLM judge scores 1-5; unreadable judge output is an error, never a made-up score.
 - **Scores** come with 95% bootstrap intervals. Reports pin the dataset SHA-256, prompt template and generation settings; the leaderboard never ranks runs that are not comparable.
 
-Details in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
+Details in [docs/METHODOLOGY.md](https://github.com/DiegoTepichin/chilango-bench/blob/main/docs/METHODOLOGY.md).
 
 ## Quickstart
 
@@ -118,7 +118,7 @@ The most valuable contributions are **reviews** and **new items**:
 uv run chilango-bench review datasets/v1/chilango-bench.jsonl --reviewer your-github-handle
 ```
 
-shows each unreviewed item with its answer and explanation and records your decision in the file. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [datasheet](datasets/README.md). Result reports for other models are welcome too: open a PR with the JSON in `results/`.
+shows each unreviewed item with its answer and explanation and records your decision in the file. See [CONTRIBUTING.md](https://github.com/DiegoTepichin/chilango-bench/blob/main/CONTRIBUTING.md) and the [datasheet](https://github.com/DiegoTepichin/chilango-bench/blob/main/datasets/README.md). Result reports for other models are welcome too: open a PR with the JSON in `results/`.
 
 ## Development
 
@@ -129,4 +129,4 @@ uv run pytest          # offline, no API keys needed
 
 ## License
 
-Code: [MIT](LICENSE). Dataset: [CC BY 4.0](datasets/README.md). © Diego Tepichin
+Code: [MIT](https://github.com/DiegoTepichin/chilango-bench/blob/main/LICENSE). Dataset: [CC BY 4.0](https://github.com/DiegoTepichin/chilango-bench/blob/main/datasets/README.md). © Diego Tepichin
